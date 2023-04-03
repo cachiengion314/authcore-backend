@@ -1,0 +1,124 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["clientExtensions"]
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+generator nestgraphql {
+  provider                                 = "node node_modules/prisma-nestjs-graphql"
+  output                                   = "../src/@generated"
+  noAtomicOperations                       = false
+  combineScalarFilters                     = false
+  reExport                                 = None
+  emitSingle                               = false
+  emitCompiled                             = false
+  purgeOutput                              = false
+  requireSingleFieldsInWhereUniqueInput    = false
+  fields_Validator_from                    = "class-validator"
+  fields_Validator_input                   = true
+  fields_Scalars_from                      = "graphql-scalars"
+  fields_Scalars_input                     = true
+  useInputType_WhereInput_ALL              = "WhereInput"
+  decorate_hideSomeCreateInput_type        = "@(*Create*Input)"
+  decorate_hideSomeCreateInput_field       = "@(id|createdAt|updatedAt|createdBy|updatedBy|createdById|updatedById|deletedAt)"
+  decorate_hideSomeCreateInput_name        = HideField
+  decorate_hideSomeCreateInput_from        = "@nestjs/graphql"
+  decorate_hideSomeCreateInput_arguments   = "[]"
+  decorate_sortdefault_type                = "*FindMany*Args"
+  decorate_sortdefault_field               = "@(orderBy)"
+  decorate_sortdefault_name                = Field
+  decorate_sortdefault_from                = "@nestjs/graphql"
+  decorate_sortdefault_arguments           = "['() => [{propertyType.0}], { nullable: true, defaultValue: [{ createdAt: `desc` }] }']"
+  decorate_hidepassword_type               = "*Update*Input"
+  decorate_hidepassword_field              = "@(createdAt|updatedAt|createdBy|updatedBy|createdById|updatedById|deletedAt|password)"
+  decorate_hidepassword_name               = HideField
+  decorate_hidepassword_from               = "@nestjs/graphql"
+  decorate_hidepassword_arguments          = "[]"
+  decorate_hidecreatenestedinput_type      = "*CreateNested*Without*"
+  decorate_hidecreatenestedinput_field     = "!(connect)"
+  decorate_hidecreatenestedinput_name      = "HideField"
+  decorate_hidecreatenestedinput_from      = "@nestjs/graphql"
+  decorate_hidecreatenestedinput_arguments = "[]"
+  decorate_whereinputdefault_type          = "*WhereInput"
+  decorate_whereinputdefault_field         = "@(deletedAt)"
+  decorate_whereinputdefault_name          = Field
+  decorate_whereinputdefault_from          = "@nestjs/graphql"
+  decorate_whereinputdefault_arguments     = "['() => [{propertyType.0}], { nullable: true, defaultValue: null }']"
+}
+
+enum RoleType {
+  Root
+  Admin
+  Developer
+  Customer
+}
+
+//
+// Tạo bảng tenant lưu những thằng lần đầu tiên tạo organizations
+// 
+model User {
+  id String @id @default(cuid())
+
+  username  String   @unique
+  email     String   @unique
+  roleType  RoleType @default(Developer)
+  /// @HideField({ output: true, input: false })
+  password  String? // dấu /// ám chỉ @HideField - là feature đặc biệt của nestgraphql
+  firstname String?
+  lastname  String?
+
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  createdUsers User[] @relation("createdByHistory")
+  updatedUsers User[] @relation("updatedByHistory")
+
+  createRoles Role[] @relation("createdByHistory")
+  updateRoles Role[] @relation("updatedByHistory")
+
+  @@map("users")
+}
+
+model Role {
+  id String @id @default(cuid())
+
+  name        String   @unique
+  type        RoleType @default(Developer)
+  description String
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("roles")
+}
+
+model CasbinRule {
+  id    Int     @id @default(autoincrement())
+  ptype String
+  v0    String?
+  v1    String?
+  v2    String?
+  v3    String?
+  v4    String?
+  v5    String?
+
+  @@map("casbin_rules")
+}

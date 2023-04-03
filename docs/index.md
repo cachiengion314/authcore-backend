@@ -1,0 +1,22 @@
+# VSCode Extension Require
+
+- Prisma https://marketplace.visualstudio.com/items?itemName=Prisma.prisma
+- Prettier https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
+- Commit Message Editor https://marketplace.visualstudio.com/items?itemName=adam-bender.commit-message-editor
+  - Commit Template:
+    - Type: Loại commit. Type này thuộc các dạng như sau:
+      - `build`: thay đổi về build, system, dependencies
+      - `chore`: thay đổi nhỏ nhặt không liên quan đến code (chính tả...)
+      - `ci`: thay đổi cài đặt CI
+      - `docs`: thay đổi về tài liệu
+      - `feat`: tính năng mới, scope có thể đánh dấu feature tương ứng trên jira
+      - `fix`: fix a bug, scope có thể đánh dấu issue tương ứng trên jira
+      - `perf`: thay đổi tăng performance
+      - `refactor`: thay đổi code không sửa lỗi cũng như không thêm tính năng (đổi tên file, hàm, biến...)
+      - `revert`: revert code
+      - `---`: empty type
+    - Scope: (require) Scope của commit, cung cấp thêm ngữ cảnh hoặc issue, feature
+    - Short description: (require) mô tả ngắn gọn
+    - Body: (optional)
+    - Breaking change: (optional) Thay đổi cực lớn, ảnh hưởng đến nhiều feature
+    - Footer: (optional)

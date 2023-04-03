@@ -1,0 +1,232 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
+  notIn: [DateTime!]
+}
+
+input EnumRoleTypeFilter {
+  equals: RoleType
+  in: [RoleType!]
+  not: NestedEnumRoleTypeFilter
+  notIn: [RoleType!]
+}
+
+type Mutation {
+  chooseOrganizations(organizationName: String!): Int!
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedDateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
+  notIn: [DateTime!]
+}
+
+input NestedEnumRoleTypeFilter {
+  equals: RoleType
+  in: [RoleType!]
+  not: NestedEnumRoleTypeFilter
+  notIn: [RoleType!]
+}
+
+input NestedStringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+type Query {
+  users(tenantId: String!, where: UserWhereInput): [User!]!
+}
+
+type Role {
+  createdAt: DateTime!
+  createdBy: User
+  createdById: String
+  deletedAt: DateTime
+  description: String!
+  id: ID!
+  name: String!
+  type: RoleType!
+  updatedAt: DateTime!
+  updatedBy: User
+  updatedById: String
+}
+
+input RoleListRelationFilter {
+  every: RoleWhereInput
+  none: RoleWhereInput
+  some: RoleWhereInput
+}
+
+enum RoleType {
+  Admin
+  Customer
+  Developer
+  Root
+}
+
+input RoleWhereInput {
+  AND: [RoleWhereInput!]
+  NOT: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
+  createdAt: DateTimeFilter
+  createdBy: UserWhereInput
+  createdById: StringNullableFilter
+  deletedAt: [DateTimeNullableFilter!] = null
+  description: StringFilter
+  id: StringFilter
+  name: StringFilter
+  type: EnumRoleTypeFilter
+  updatedAt: DateTimeFilter
+  updatedBy: UserWhereInput
+  updatedById: StringNullableFilter
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+type User {
+  _count: UserCount!
+  createRoles: [Role!]
+  createdAt: DateTime!
+  createdBy: User
+  createdById: String
+  createdUsers: [User!]
+  deletedAt: DateTime
+  email: String!
+  firstname: String
+  id: ID!
+  lastname: String
+  roleType: RoleType!
+  updateRoles: [Role!]
+  updatedAt: DateTime!
+  updatedBy: User
+  updatedById: String
+  updatedUsers: [User!]
+  username: String!
+}
+
+type UserCount {
+  createRoles: Int!
+  createdUsers: Int!
+  updateRoles: Int!
+  updatedUsers: Int!
+}
+
+input UserListRelationFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  createRoles: RoleListRelationFilter
+  createdAt: DateTimeFilter
+  createdBy: UserWhereInput
+  createdById: StringNullableFilter
+  createdUsers: UserListRelationFilter
+  deletedAt: [DateTimeNullableFilter!] = null
+  email: StringFilter
+  firstname: StringNullableFilter
+  id: StringFilter
+  lastname: StringNullableFilter
+  password: StringNullableFilter
+  roleType: EnumRoleTypeFilter
+  updateRoles: RoleListRelationFilter
+  updatedAt: DateTimeFilter
+  updatedBy: UserWhereInput
+  updatedById: StringNullableFilter
+  updatedUsers: UserListRelationFilter
+  username: StringFilter
+}
