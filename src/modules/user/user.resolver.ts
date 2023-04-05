@@ -1,11 +1,12 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql'
 import { User } from '../../@generated/user/user.model'
 import { GqlReq } from '../../common/decorators/req-decorator'
-import { FindManyUsersWithTenantIdArgs } from './args'
 import { UserService } from './user.service'
 import { UseGuards } from '@nestjs/common'
 import { GqlJwtAuthGuard } from '../auth/gql-auth.guard'
 import { CreateOneUserArgs } from 'src/@generated/user/create-one-user.args'
+import { Token } from '../auth/models/token.model'
+import { FindManyUserArgs } from 'src/@generated/user/find-many-user.args'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -13,15 +14,15 @@ export class UserResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Query(() => [User])
-  async users(@Args() args: FindManyUsersWithTenantIdArgs, @GqlReq() req: any) {
+  async users(@Args() args: FindManyUserArgs, @GqlReq() req: any) {
     const { user } = req
-    console.log(`user`, user)
-    const { tenantId } = args
+    const { where } = args
+    const { tenantId } = user
 
-    return this.userService.findAll(tenantId)
+    return this.userService.findManyUsers(tenantId, where)
   }
 
-  @Mutation(() => Number)
+  @Mutation(() => Token)
   async saveOneTenant(@Args() args: CreateOneUserArgs) {
     return await this.userService.createOneTenant(args)
   }

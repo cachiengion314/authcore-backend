@@ -19,7 +19,7 @@ const prisma = new PrismaClient({
 async function main() {
   const models = Prisma.dmmf.datamodel.models
   await clearDatabase(models)
-  await createUserAdmin()
+  await createTenantAdmin()
 }
 
 main()
@@ -34,7 +34,7 @@ main()
  * --------------- * ------private-utilities-function--------- * ---------------
  */
 
-async function createUserAdmin() {
+async function createTenantAdmin() {
   const salt = await bcrypt.genSalt(10)
   const hash = await bcrypt.hash('12345678', salt)
 

@@ -1,4 +1,5 @@
 export interface JwtDto {
+  tenantId: string
   userId: string
   /**
    * Issued at

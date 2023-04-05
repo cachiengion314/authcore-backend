@@ -23,7 +23,7 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
-  async createUser(payload: SignupInput): Promise<Token> {
+  async createTenant(payload: SignupInput): Promise<Token> {
     const { tenantId } = payload
     const hashedPassword = await this.passwordService.hashPassword(payload.password)
 
@@ -37,6 +37,7 @@ export class AuthService {
 
       return this.generateTokens({
         userId: user.id,
+        tenantId,
       })
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
@@ -47,8 +48,10 @@ export class AuthService {
     }
   }
 
-  async login(username: string, password: string): Promise<Token> {
-    const user = await this.prismaClientManager.getClient().user.findUnique({ where: { username } })
+  async login(tenantId: string, username: string, password: string): Promise<Token> {
+    const user = await this.prismaClientManager
+      .getClient(tenantId)
+      .user.findUnique({ where: { username } })
 
     if (!user) {
       throw new NotFoundException(`No user found for username: ${username}`)
@@ -62,19 +65,21 @@ export class AuthService {
 
     return this.generateTokens({
       userId: user.id,
+      tenantId,
     })
   }
 
-  validateUser(userId: string): Promise<User> {
-    return this.prismaClientManager.getClient().user.findUnique({ where: { id: userId } })
+  validateUser(tenantId: string, userId: string): Promise<User> {
+    return this.prismaClientManager.getClient(tenantId).user.findUnique({ where: { id: userId } })
   }
 
   getUserFromToken(token: string): Promise<User> {
     const id = this.jwtService.decode(token)['userId']
-    return this.prismaClientManager.getClient().user.findUnique({ where: { id } })
+    const tenantId = this.jwtService.decode(token)['tenantId']
+    return this.prismaClientManager.getClient(tenantId).user.findUnique({ where: { id } })
   }
 
-  generateTokens(payload: { userId: string }): Token {
+  generateTokens(payload: { userId: string; tenantId: string }): Token {
     return {
       accessToken: this.generateAccessToken(payload),
       refreshToken: this.generateRefreshToken(payload),
@@ -93,7 +98,7 @@ export class AuthService {
     })
   }
 
-  refreshToken(token: string) {
+  refreshToken(token: string, tenantId = 'trm') {
     try {
       const { userId } = this.jwtService.verify(token, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
@@ -101,6 +106,7 @@ export class AuthService {
 
       return this.generateTokens({
         userId,
+        tenantId,
       })
     } catch (e) {
       throw new UnauthorizedException()
@@ -110,6 +116,7 @@ export class AuthService {
   generateTokenFrom(payload: any, opt: { secret: string; expiresIn?: number }) {
     return this.jwtService.sign(payload, opt)
   }
+
   verifyTokenFrom(hash: string, opt: { secret: string }) {
     return this.jwtService.verify(hash, opt)
   }

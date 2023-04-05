@@ -3,7 +3,6 @@ import { AuthService } from './auth.service'
 import { Auth } from './models/auth.model'
 import { Token } from './models/token.model'
 import { LoginInput } from './dto/login.input'
-import { SignupInput } from './dto/signup.input'
 import { RefreshTokenInput } from './dto/refresh-token.input'
 import { User } from '../../@generated/user/user.model'
 
@@ -12,18 +11,9 @@ export class AuthResolver {
   constructor(private readonly auth: AuthService) {}
 
   @Mutation(() => Auth)
-  async signup(@Args('data') data: SignupInput) {
-    data.username = data.username.toLowerCase()
-    const { accessToken, refreshToken } = await this.auth.createUser(data)
-    return {
-      accessToken,
-      refreshToken,
-    }
-  }
-
-  @Mutation(() => Auth)
   async login(@Args('data') data: LoginInput) {
     const { accessToken, refreshToken } = await this.auth.login(
+      data.tenantId,
       data.username.toLowerCase(),
       data.password
     )

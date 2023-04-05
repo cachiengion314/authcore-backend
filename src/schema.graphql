@@ -52,14 +52,14 @@ scalar JWT
 
 input LoginInput {
   password: String!
+  tenantId: String!
   username: String!
 }
 
 type Mutation {
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
-  saveOneTenant(data: UserCreateInput!): Int!
-  signup(data: SignupInput!): Auth!
+  saveOneTenant(data: UserCreateInput!): Token!
 }
 
 input NestedDateTimeFilter {
@@ -120,7 +120,7 @@ input NestedStringNullableFilter {
 }
 
 type Query {
-  users(tenantId: String!, where: UserWhereInput): [User!]!
+  users(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: UserWhereInput): [User!]!
 }
 
 type Role {
@@ -149,6 +149,10 @@ input RoleListRelationFilter {
   every: RoleWhereInput
   none: RoleWhereInput
   some: RoleWhereInput
+}
+
+input RoleOrderByRelationAggregateInput {
+  _count: SortOrder
 }
 
 enum RoleType {
@@ -180,14 +184,9 @@ input RoleWhereUniqueInput {
   name: String
 }
 
-input SignupInput {
-  databaseUrl: String
-  email: String!
-  firstname: String
-  lastname: String
-  password: String!
-  tenantId: String
-  username: String!
+enum SortOrder {
+  asc
+  desc
 }
 
 input StringFilter {
@@ -283,6 +282,50 @@ input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
+}
+
+input UserOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input UserOrderByWithRelationInput {
+  createRoles: RoleOrderByRelationAggregateInput
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  createdUsers: UserOrderByRelationAggregateInput
+  databaseUrl: SortOrder
+  deletedAt: SortOrder
+  email: SortOrder
+  firstname: SortOrder
+  id: SortOrder
+  lastname: SortOrder
+  password: SortOrder
+  roleType: SortOrder
+  tenantId: SortOrder
+  updateRoles: RoleOrderByRelationAggregateInput
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+  updatedUsers: UserOrderByRelationAggregateInput
+  username: SortOrder
+}
+
+enum UserScalarFieldEnum {
+  createdAt
+  createdById
+  databaseUrl
+  deletedAt
+  email
+  firstname
+  id
+  lastname
+  password
+  roleType
+  tenantId
+  updatedAt
+  updatedById
+  username
 }
 
 input UserWhereInput {

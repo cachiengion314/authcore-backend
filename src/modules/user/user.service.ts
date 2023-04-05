@@ -4,6 +4,7 @@ import { execCommand, getDatabaseUrlFrom } from 'src/common/utility'
 import { CreateOneUserArgs } from 'src/@generated/user/create-one-user.args'
 import { AuthService } from '../auth/auth.service'
 import { throwBadRequestException } from 'src/common/utility/exception'
+import { UserWhereInput } from 'src/@generated/user/user-where.input'
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,7 @@ export class UserService {
     await execCommand(`ts-node prisma/seed.ts ${tenantId}`)
 
     const { username, email, password, firstname, lastname } = args.data
-    await this.authService.createUser({
+    const result = await this.authService.createTenant({
       username,
       email,
       password,
@@ -35,12 +36,16 @@ export class UserService {
       tenantId,
       databaseUrl: DATABASE_URL,
     })
-
-    return 1
+    if (!result) {
+      throwBadRequestException()
+    }
+    const { accessToken, refreshToken } = result
+    return { accessToken, refreshToken }
   }
 
-  findAll(tenantId: string) {
-    // just use this.prisma to access the database
-    return this.prismaClientManager.getClient(tenantId).user.findMany()
+  findManyUsers(tenantId: string, where: UserWhereInput) {
+    return this.prismaClientManager.getClient(tenantId).user.findMany({
+      where,
+    })
   }
 }
