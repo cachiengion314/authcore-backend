@@ -6,7 +6,7 @@ export class PrismaClientManager {
   // the client instances cache object
   private clients: { [key: string]: PrismaClient } = {}
 
-  getClient(tenantId: string): PrismaClient {
+  getClient(tenantId: string = 'trm'): PrismaClient {
     let client = this.clients[tenantId]
     // create and cache a new client when needed
     if (!client) {

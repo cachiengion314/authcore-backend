@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
-import { Repositories } from '../src/modules/db/repositories.provider'
+import { Repositories } from '../src/modules/db/client-manager.provider'
 import { Profile } from '@prisma/client'
 
 describe('app (e2e)', () => {

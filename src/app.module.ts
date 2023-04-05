@@ -9,6 +9,8 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { BullModule } from '@nestjs/bull'
 import { UserModule } from './modules/user/user.module'
+import { FileModule } from './modules/file/file.module'
+import { AuthModule } from './modules/auth/auth.module'
 
 @Module({
   imports: [
@@ -29,7 +31,9 @@ import { UserModule } from './modules/user/user.module'
       driver: ApolloDriver,
       useClass: GqlConfigService,
     }),
+    AuthModule,
     UserModule,
+    FileModule,
   ],
 })
 export class AppModule {}

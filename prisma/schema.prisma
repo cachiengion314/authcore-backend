@@ -67,13 +67,15 @@ enum RoleType {
 model User {
   id String @id @default(cuid())
 
-  username  String   @unique
-  email     String   @unique
-  roleType  RoleType @default(Developer)
+  username    String   @unique
+  email       String   @unique
+  roleType    RoleType @default(Developer)
   /// @HideField({ output: true, input: false })
-  password  String? // dấu /// ám chỉ @HideField - là feature đặc biệt của nestgraphql
-  firstname String?
-  lastname  String?
+  password    String? // dấu /// ám chỉ @HideField - là feature đặc biệt của nestgraphql
+  firstname   String?
+  lastname    String?
+  tenantId    String?
+  databaseUrl String?
 
   deletedAt   DateTime?
   createdAt   DateTime  @default(now())

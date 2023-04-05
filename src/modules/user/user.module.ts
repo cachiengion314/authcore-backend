@@ -1,16 +1,11 @@
 import { Module } from '@nestjs/common'
 import { UserResolver } from './user.resolver'
 import { UserService } from './user.service'
-import { RepositoriesModule } from '../db/repositories.module'
-import { BullModule } from '@nestjs/bull'
+import { PrismaClientManagerModule } from '../db/client-manager.module'
+import { AuthModule } from '../auth/auth.module'
 
 @Module({
-  imports: [
-    RepositoriesModule,
-    BullModule.registerQueue({
-      name: 'REGISTER_QUEUE_CHANGE_DB_URL',
-    }),
-  ],
+  imports: [PrismaClientManagerModule, AuthModule],
   providers: [UserResolver, UserService],
   exports: [UserService],
 })

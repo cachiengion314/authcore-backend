@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Auth {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """JWT refresh token"""
+  refreshToken: JWT!
+  user: User!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -36,8 +45,21 @@ input EnumRoleTypeFilter {
   notIn: [RoleType!]
 }
 
+"""
+A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+"""
+scalar JWT
+
+input LoginInput {
+  password: String!
+  username: String!
+}
+
 type Mutation {
-  chooseOrganizations(organizationName: String!): Int!
+  login(data: LoginInput!): Auth!
+  refreshToken(token: JWT!): Token!
+  saveOneTenant(data: UserCreateInput!): Int!
+  signup(data: SignupInput!): Auth!
 }
 
 input NestedDateTimeFilter {
@@ -115,6 +137,14 @@ type Role {
   updatedById: String
 }
 
+input RoleCreateNestedManyWithoutCreatedByInput {
+  connect: [RoleWhereUniqueInput!]
+}
+
+input RoleCreateNestedManyWithoutUpdatedByInput {
+  connect: [RoleWhereUniqueInput!]
+}
+
 input RoleListRelationFilter {
   every: RoleWhereInput
   none: RoleWhereInput
@@ -145,6 +175,21 @@ input RoleWhereInput {
   updatedById: StringNullableFilter
 }
 
+input RoleWhereUniqueInput {
+  id: String
+  name: String
+}
+
+input SignupInput {
+  databaseUrl: String
+  email: String!
+  firstname: String
+  lastname: String
+  password: String!
+  tenantId: String
+  username: String!
+}
+
 input StringFilter {
   contains: String
   endsWith: String
@@ -173,6 +218,14 @@ input StringNullableFilter {
   startsWith: String
 }
 
+type Token {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """JWT refresh token"""
+  refreshToken: JWT!
+}
+
 type User {
   _count: UserCount!
   createRoles: [Role!]
@@ -180,12 +233,14 @@ type User {
   createdBy: User
   createdById: String
   createdUsers: [User!]
+  databaseUrl: String
   deletedAt: DateTime
   email: String!
   firstname: String
   id: ID!
   lastname: String
   roleType: RoleType!
+  tenantId: String
   updateRoles: [Role!]
   updatedAt: DateTime!
   updatedBy: User
@@ -199,6 +254,29 @@ type UserCount {
   createdUsers: Int!
   updateRoles: Int!
   updatedUsers: Int!
+}
+
+input UserCreateInput {
+  createRoles: RoleCreateNestedManyWithoutCreatedByInput
+  createdUsers: UserCreateNestedManyWithoutCreatedByInput
+  databaseUrl: String
+  email: String!
+  firstname: String
+  lastname: String
+  password: String
+  roleType: RoleType
+  tenantId: String
+  updateRoles: RoleCreateNestedManyWithoutUpdatedByInput
+  updatedUsers: UserCreateNestedManyWithoutUpdatedByInput
+  username: String!
+}
+
+input UserCreateNestedManyWithoutCreatedByInput {
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateNestedManyWithoutUpdatedByInput {
+  connect: [UserWhereUniqueInput!]
 }
 
 input UserListRelationFilter {
@@ -216,6 +294,7 @@ input UserWhereInput {
   createdBy: UserWhereInput
   createdById: StringNullableFilter
   createdUsers: UserListRelationFilter
+  databaseUrl: StringNullableFilter
   deletedAt: [DateTimeNullableFilter!] = null
   email: StringFilter
   firstname: StringNullableFilter
@@ -223,10 +302,17 @@ input UserWhereInput {
   lastname: StringNullableFilter
   password: StringNullableFilter
   roleType: EnumRoleTypeFilter
+  tenantId: StringNullableFilter
   updateRoles: RoleListRelationFilter
   updatedAt: DateTimeFilter
   updatedBy: UserWhereInput
   updatedById: StringNullableFilter
   updatedUsers: UserListRelationFilter
   username: StringFilter
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: String
+  username: String
 }

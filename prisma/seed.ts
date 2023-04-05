@@ -5,11 +5,10 @@ let bash_arguments = []
 process.argv.forEach(function (val, index, array) {
   bash_arguments.push(val)
 })
+const defaultDB = process.env['MYSQL_DATABASE']
 
 const tenantId = bash_arguments[2] || process.env['MYSQL_DATABASE']
 console.log(`tenantId`, tenantId)
-
-const defaultDB = process.env['MYSQL_DATABASE']
 
 const prisma = new PrismaClient({
   datasources: {
@@ -46,7 +45,7 @@ async function createUserAdmin() {
       lastname: 'root',
       roleType: RoleType.Root,
       password: hash,
-      email: `root@${tenantId}.com`,
+      email: `root@root.com`,
     },
   })
   const admin = await prisma.user.create({
@@ -56,7 +55,7 @@ async function createUserAdmin() {
       lastname: 'admin',
       roleType: RoleType.Admin,
       password: hash,
-      email: `admin@${tenantId}.com`,
+      email: `admin@admin.com`,
       createdBy: { connect: { id: root.id } },
       updatedBy: { connect: { id: root.id } },
     },
