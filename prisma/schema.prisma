@@ -56,7 +56,7 @@ generator nestgraphql {
 
 enum ActiveStatus {
   Active // Hoạt động 
-  Locked //Khóa
+  Locked // Khóa
 }
 
 enum Gender {
@@ -71,25 +71,23 @@ enum RoleType {
   Customer
 }
 
-//
-// Tạo bảng tenant lưu những thằng lần đầu tiên tạo organizations
-// 
 model User {
   id String @id @default(cuid())
 
-  code          String? // Code	String		x	Unique, Mã nhân viên
+  code          String?      @unique // Code	String		x	Unique, Mã nhân viên
   originalId    String       @unique // OriginalId	String			Unique, AzureId
   fullName      String? // FullName	String		x	Họ tên
+  department    Department?  @relation("departmentHistory", fields: [departmentId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   departmentId  String? // DepartmentId	Guid		x	FK, Department
   jobTitle      String? // JobTitle	String		x	Chức danh
   position      String? // Position	String		x	Vị trí
-  dateOfBirth   String? // DateOfBirth	Date		x	Ngày sinh
+  dateOfBirth   DateTime? // DateOfBirth	Date		x	Ngày sinh
   gender        Gender?      @default(Male) // Gender	Enum	"Male Female"	x	
   email         String       @unique // azure email
   phoneNumber   String? // PhoneNumber	String		x	Số điện thoại
   avartarUrl    String? // AvartarUrl	String		x	Đường dẫn ảnh đại diện
   backgroundUrl String? // BackgroundUrl	String		x	Đường dẫn ảnh nền
-  isAdmin       String // IsAdmin	Bool			Quản trị
+  isAdmin       Boolean // IsAdmin	Bool			Quản trị
   status        ActiveStatus @default(Active) // Status	Enum	"Active
 
   deletedAt   DateTime?
@@ -102,6 +100,10 @@ model User {
 
   createdUsers User[] @relation("createdByHistory")
   updatedUsers User[] @relation("updatedByHistory")
+
+  createdUserIndustries UserIndustry[] @relation("userHistory")
+  createdUserAwards     UserAward[]    @relation("userHistory")
+  createdUserGroups     UserGroup[]    @relation("userHistory")
 
   createIdeas       Idea[]       @relation("createdByHistory")
   updateIdeas       Idea[]       @relation("updatedByHistory")
@@ -163,9 +165,11 @@ model CasbinRule {
 model UserIndustry {
   id String @id @default(cuid())
 
+  user        User     @relation("userHistory", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId      String // UserId	Guid			FK, User
-  industryId  String // IndustryId	Guid			FK, Group
-  description String // 
+  industry    Industry @relation("industryHistory", fields: [industryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  industryId  String // IndustryId	Guid			FK, Industry
+  description String?
 
   @@map("user_industries")
 }
@@ -173,7 +177,9 @@ model UserIndustry {
 model UserAward {
   id String @id @default(cuid())
 
+  user       User     @relation("userHistory", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     String // UserId	Guid			FK, User
+  award      Award    @relation("awardHistory", fields: [awardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   awardId    String // AwardId	Guid			FK, Group
   receivedAt DateTime // ReceivedAt	Date			Ngày nhận giải thưởng
 
@@ -192,13 +198,17 @@ model Group {
   postCount        Int // PostCount	Number			Số lượng bài viết
   status           ActiveStatus @default(Active) // Status	Enum	"Active
 
+  createdUserGroups UserGroup[] @relation("groupHistory")
+
   @@map("groups")
 }
 
 model UserGroup {
   id String @id @default(cuid())
 
+  user     User         @relation("userHistory", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId   String // UserId	Guid			FK, User
+  group    Group        @relation("groupHistory", fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId  String // GroupId	Guid			FK, Group
   joinedAt DateTime // JoinedAt	Date
   status   ActiveStatus @default(Active) // Status	Enum	"Active
@@ -229,8 +239,8 @@ model Post {
   head        String // Head	String			Mô tả ngắn
   content     String // Content	String			Nội dung
   tag         String // Tag	String			Các từ khóa, cách nhau bởi dấu phẩy
-  viewCount   String // ViewCount	Number			Lượt xem
-  likeCount   String // LikeCount	Number			Lượt thích
+  viewCount   Int // ViewCount	Number			Lượt xem
+  likeCount   Int // LikeCount	Number			Lượt thích
   status      PostStatus // Status	Enum	"Editing WaitingForApproval Published Suspended"
   editingBy   String? // EditingBy	Guid		x	FK, User
   approvedBy  String? // ApprovedBy	Guid		x	FK, User
@@ -390,6 +400,7 @@ model Department {
   updatedById String?
 
   childs Department[] @relation("parentChain")
+  users  User[]       @relation("departmentHistory")
 
   @@map("departments")
 }
@@ -410,6 +421,8 @@ model Industry {
   createdById String?
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
+
+  userIndustries UserIndustry[] @relation("industryHistory")
 
   @@map("industries")
 }
@@ -475,6 +488,8 @@ model Award {
   createdById String?
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
+
+  createdUserAward UserAward[] @relation("awardHistory")
 
   @@map("awards")
 }
