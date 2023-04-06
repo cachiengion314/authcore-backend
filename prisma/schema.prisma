@@ -54,6 +54,16 @@ generator nestgraphql {
   decorate_whereinputdefault_arguments     = "['() => [{propertyType.0}], { nullable: true, defaultValue: null }']"
 }
 
+enum ActiveStatus {
+  Active // Hoạt động 
+  Locked //Khóa
+}
+
+enum Gender {
+  Male
+  Female
+}
+
 enum RoleType {
   Root
   Admin
@@ -67,15 +77,20 @@ enum RoleType {
 model User {
   id String @id @default(cuid())
 
-  username    String   @unique
-  email       String   @unique
-  roleType    RoleType @default(Developer)
-  /// @HideField({ output: true, input: false })
-  password    String? // dấu /// ám chỉ @HideField - là feature đặc biệt của nestgraphql
-  firstname   String?
-  lastname    String?
-  tenantId    String?
-  databaseUrl String?
+  code          String? // Code	String		x	Unique, Mã nhân viên
+  originalId    String       @unique // OriginalId	String			Unique, AzureId
+  fullName      String? // FullName	String		x	Họ tên
+  departmentId  String? // DepartmentId	Guid		x	FK, Department
+  jobTitle      String? // JobTitle	String		x	Chức danh
+  position      String? // Position	String		x	Vị trí
+  dateOfBirth   String? // DateOfBirth	Date		x	Ngày sinh
+  gender        Gender?      @default(Male) // Gender	Enum	"Male Female"	x	
+  email         String       @unique // azure email
+  phoneNumber   String? // PhoneNumber	String		x	Số điện thoại
+  avartarUrl    String? // AvartarUrl	String		x	Đường dẫn ảnh đại diện
+  backgroundUrl String? // BackgroundUrl	String		x	Đường dẫn ảnh nền
+  isAdmin       String // IsAdmin	Bool			Quản trị
+  status        ActiveStatus @default(Active) // Status	Enum	"Active
 
   deletedAt   DateTime?
   createdAt   DateTime  @default(now())
@@ -88,8 +103,28 @@ model User {
   createdUsers User[] @relation("createdByHistory")
   updatedUsers User[] @relation("updatedByHistory")
 
-  createRoles Role[] @relation("createdByHistory")
-  updateRoles Role[] @relation("updatedByHistory")
+  createIdeas       Idea[]       @relation("createdByHistory")
+  updateIdeas       Idea[]       @relation("updatedByHistory")
+  createFeedbacks   Feedback[]   @relation("createdByHistory")
+  updateFeedbacks   Feedback[]   @relation("updatedByHistory")
+  createPosts       Post[]       @relation("createdByHistory")
+  updatePosts       Post[]       @relation("updatedByHistory")
+  createRoles       Role[]       @relation("createdByHistory")
+  updateRoles       Role[]       @relation("updatedByHistory")
+  createAwards      Award[]      @relation("createdByHistory")
+  updateAwards      Award[]      @relation("updatedByHistory")
+  createTags        Tag[]        @relation("createdByHistory")
+  updateTags        Tag[]        @relation("updatedByHistory")
+  createTopics      Topic[]      @relation("createdByHistory")
+  updateTopics      Topic[]      @relation("updatedByHistory")
+  createIndustries  Industry[]   @relation("createdByHistory")
+  updateIndustries  Industry[]   @relation("updatedByHistory")
+  createDepartments Department[] @relation("createdByHistory")
+  updateDepartments Department[] @relation("updatedByHistory")
+  createUserVotes   UserVote[]   @relation("createdByHistory")
+  updateUserVotes   UserVote[]   @relation("updatedByHistory")
+  createPostIdeas   PostIdea[]   @relation("createdByHistory")
+  updatePostIdeas   PostIdea[]   @relation("updatedByHistory")
 
   @@map("users")
 }
@@ -123,4 +158,323 @@ model CasbinRule {
   v5    String?
 
   @@map("casbin_rules")
+}
+
+model UserIndustry {
+  id String @id @default(cuid())
+
+  userId      String // UserId	Guid			FK, User
+  industryId  String // IndustryId	Guid			FK, Group
+  description String // 
+
+  @@map("user_industries")
+}
+
+model UserAward {
+  id String @id @default(cuid())
+
+  userId     String // UserId	Guid			FK, User
+  awardId    String // AwardId	Guid			FK, Group
+  receivedAt DateTime // ReceivedAt	Date			Ngày nhận giải thưởng
+
+  @@map("user_awards")
+}
+
+model Group {
+  id String @id @default(cuid())
+
+  name             String // Name	String			Tên nhóm
+  shortDescription String? // ShortDescription	String		x	Mô tả ngắn gọn
+  longDescription  String? // LongDescription	String		x	Mô tả đầy đủ
+  thumbnailUrl     String? // ThumbnailUrl	String		x	Đường dẫn ảnh biểu tượng
+  backgroundUrl    String? // BackgroundUrl	String		x	Đường dẫn ảnh nền
+  memberCount      Int // MemberCount	Number			Số lượng thành viên
+  postCount        Int // PostCount	Number			Số lượng bài viết
+  status           ActiveStatus @default(Active) // Status	Enum	"Active
+
+  @@map("groups")
+}
+
+model UserGroup {
+  id String @id @default(cuid())
+
+  userId   String // UserId	Guid			FK, User
+  groupId  String // GroupId	Guid			FK, Group
+  joinedAt DateTime // JoinedAt	Date
+  status   ActiveStatus @default(Active) // Status	Enum	"Active
+
+  @@map("user_groups")
+}
+
+enum PostType {
+  Post
+  Campaign
+  Announcement
+}
+
+enum PostStatus {
+  Editing
+  Published
+  Suspended
+  WaitingForApproval
+}
+
+model Post {
+  id String @id @default(cuid())
+
+  slug        String     @unique // Slug	String			Unique, Đường dẫn để rewrite
+  type        PostType   @default(Post) // Type	Enum	"Announcement Post Campaign"		
+  title       String // Title	String			Tiêu đề
+  subTitle    String? // SubTitle	String		x	Tiêu đề phụ
+  head        String // Head	String			Mô tả ngắn
+  content     String // Content	String			Nội dung
+  tag         String // Tag	String			Các từ khóa, cách nhau bởi dấu phẩy
+  viewCount   String // ViewCount	Number			Lượt xem
+  likeCount   String // LikeCount	Number			Lượt thích
+  status      PostStatus // Status	Enum	"Editing WaitingForApproval Published Suspended"
+  editingBy   String? // EditingBy	Guid		x	FK, User
+  approvedBy  String? // ApprovedBy	Guid		x	FK, User
+  publishedAt DateTime // PublishedAt	Date			Ngày xuất bản
+  expiredAt   DateTime // ExpiredAt	Date			Ngày hết hạn
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("posts")
+}
+
+model PostTopic {
+  id String @id @default(cuid())
+
+  postId      String // PostId	Guid		 	FK, Post
+  topicId     String // TopicId	Guid			FK, Topic
+  description String?
+
+  @@map("post_topics")
+}
+
+model PostTag {
+  id String @id @default(cuid())
+
+  postId      String // PostId	Guid		 	FK, Post
+  tagId       String // TagId	Guid			FK, Tag
+  description String?
+
+  @@map("post_tags")
+}
+
+enum FeedbackType {
+  Feedback
+  Question
+}
+
+enum FeedbackStatus {
+  Waiting
+  Editing
+  Completed
+  Rejected
+}
+
+model Feedback {
+  id String @id @default(cuid())
+
+  type          FeedbackType   @default(Feedback) // Type	Enum	"Feedback Question"		Loại góp ý
+  industryId    String // IndustryId	Guid			FK, Industry
+  departmentId  String // DepartmentId	Guid			FK, Department
+  title         String // Title	String		 	Tiêu đề
+  content       String? // Content	String		x	Nội dung
+  reply         String? // Reply	String		x	Trả lời
+  attachmentUrl String? // AttachmentUrl	String		x	Đường dẫn file đính kèm
+  status        FeedbackStatus @default(Waiting) // Status	Enum	"Waiting Editing Completed Rejected"
+  editingBy     String // EditingBy	Guid			FK, User
+  resolvedBy    String // ResolvedBy	Guid			FK, User
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("feedbacks")
+}
+
+model PostIdea {
+  id String @id @default(cuid())
+
+  postId      String // PostId	Guid			FK, Post
+  userId      String // UserId	Guid			FK, User
+  ideaId      String // IdeaId	Guid			FK, Idea
+  description String? // IdeaId	Guid			FK, Idea
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("post_ideas")
+}
+
+enum IdeaStatus {
+  Waiting
+  Editing
+  Approved
+  Rejected
+}
+
+model Idea {
+  id String @id @default(cuid())
+
+  title      String // Title	String		 	Tiêu đề
+  content    String? // Content	String		x	Nội dung
+  status     IdeaStatus @default(Waiting) // Status	Enum	"Waiting Editing Approved Rejected"
+  editingBy  String // EditingBy	Guid			FK, User
+  approvedBy String // ApprovedBy	Guid			FK, User
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("ideas")
+}
+
+model UserVote {
+  id String @id @default(cuid())
+
+  postId      String // PostId	Guid			FK, Post
+  userId      String // UserId	Guid			FK, User
+  ideaId      String // IdeaId	Guid			FK, Idea
+  description String? // IdeaId	Guid			FK, Idea
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("user_votes")
+}
+
+model Department {
+  id String @id @default(cuid())
+
+  code        String?      @unique // Code	String		x	Unique
+  name        String // Name	String		 	Địa điểm
+  description String? // Description	String		x	Mô tả
+  parent      Department?  @relation("parentChain", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  parentId    String? // ParentId	Guid		x	FK, Topic
+  sortOrder   Int          @default(0) // SortOrder	Number			Thứ tự
+  status      ActiveStatus @default(Active) // Status	Enum	"Active
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  childs Department[] @relation("parentChain")
+
+  @@map("departments")
+}
+
+model Industry {
+  id String @id @default(cuid())
+
+  code        String?      @unique // Code	String		x	Unique
+  name        String // Name	String		 	Địa điểm
+  description String? // Description	String		x	Mô tả
+  sortOrder   Int          @default(0) // SortOrder	Number			Thứ tự
+  status      ActiveStatus @default(Active) // Status	Enum	"Active
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("industries")
+}
+
+model Topic {
+  id String @id @default(cuid())
+
+  slug        String       @unique // Slug	String			Unique, Đường dẫn để rewrite
+  name        String // Name	String		 	Địa điểm
+  description String? // Description	String		x	Mô tả
+  parent      Topic?       @relation("parentChain", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  parentId    String? // ParentId	Guid		x	FK, Topic
+  sortOrder   Int          @default(0) // SortOrder	Number			Thứ tự
+  status      ActiveStatus @default(Active) // Status	Enum	"Active
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  childs Topic[] @relation("parentChain")
+
+  @@map("topics")
+}
+
+model Tag {
+  id String @id @default(cuid())
+
+  code        String? // Code	String		x	Unique
+  name        String // Name	String		 	Tên
+  description String? // Description	String		x	Mô tả
+  sortOrder   Int          @default(0) // SortOrder	Number			Thứ tự
+  status      ActiveStatus @default(Active) // Status	Enum	"Active
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("tags")
+}
+
+model Award {
+  id String @id @default(cuid())
+
+  code         String? // Code	String		x	Unique
+  name         String // Name	String		 	Tên
+  description  String? // Description	String		x	Mô tả
+  thumbnailUrl String? // ThumbnailUrl	String		x	Đường dẫn Icon biểu tượng
+  sortOrder    Int          @default(0) // SortOrder	Number			Thứ tự
+  status       ActiveStatus @default(Active) // Status	Enum	"Active
+
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  createdBy   User?     @relation("createdByHistory", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  createdById String?
+  updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  updatedById String?
+
+  @@map("awards")
 }
