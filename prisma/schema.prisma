@@ -104,6 +104,12 @@ model User {
   createdUserIndustries UserIndustry[] @relation("userHistory")
   createdUserAwards     UserAward[]    @relation("userHistory")
   createdUserGroups     UserGroup[]    @relation("userHistory")
+  editedFeedbacks       Feedback[]     @relation("editingByHistory")
+  resolvedFeedbacks     Feedback[]     @relation("resolvedByHistory")
+  createdPostIdeas      PostIdea[]     @relation("userHistory")
+  editedIdeas           Idea[]         @relation("editingByHistory")
+  approvedIdeas         Idea[]         @relation("approvedByHistory")
+  createdUserVote       UserVote[]     @relation("userHistory")
 
   createIdeas       Idea[]       @relation("createdByHistory")
   updateIdeas       Idea[]       @relation("updatedByHistory")
@@ -255,13 +261,20 @@ model Post {
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
 
+  createdPostTopics PostTopic[] @relation("postHistory")
+  createdPostTags   PostTag[]   @relation("postHistory")
+  createdPostIdeas  PostIdea[]  @relation("postHistory")
+  createdUserVotes  UserVote[]  @relation("postHistory")
+
   @@map("posts")
 }
 
 model PostTopic {
   id String @id @default(cuid())
 
+  post        Post    @relation("postHistory", fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   postId      String // PostId	Guid		 	FK, Post
+  topic       Topic   @relation("topicHistory", fields: [topicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   topicId     String // TopicId	Guid			FK, Topic
   description String?
 
@@ -271,7 +284,9 @@ model PostTopic {
 model PostTag {
   id String @id @default(cuid())
 
+  post        Post    @relation("postHistory", fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   postId      String // PostId	Guid		 	FK, Post
+  tag         Tag     @relation("tagHistory", fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   tagId       String // TagId	Guid			FK, Tag
   description String?
 
@@ -294,15 +309,19 @@ model Feedback {
   id String @id @default(cuid())
 
   type          FeedbackType   @default(Feedback) // Type	Enum	"Feedback Question"		Loại góp ý
+  industry      Industry       @relation("industryHistory", fields: [industryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   industryId    String // IndustryId	Guid			FK, Industry
+  department    Department     @relation("departmentHistory", fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   departmentId  String // DepartmentId	Guid			FK, Department
   title         String // Title	String		 	Tiêu đề
   content       String? // Content	String		x	Nội dung
   reply         String? // Reply	String		x	Trả lời
   attachmentUrl String? // AttachmentUrl	String		x	Đường dẫn file đính kèm
   status        FeedbackStatus @default(Waiting) // Status	Enum	"Waiting Editing Completed Rejected"
-  editingBy     String // EditingBy	Guid			FK, User
-  resolvedBy    String // ResolvedBy	Guid			FK, User
+  editingBy     User           @relation("editingByHistory", fields: [editingById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  editingById   String // EditingBy	Guid			FK, User
+  resolvedBy    User           @relation("resolvedByHistory", fields: [resolvedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  resolvedById  String // ResolvedBy	Guid			FK, User
 
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -318,10 +337,13 @@ model Feedback {
 model PostIdea {
   id String @id @default(cuid())
 
+  post        Post    @relation("postHistory", fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   postId      String // PostId	Guid			FK, Post
+  user        User    @relation("userHistory", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId      String // UserId	Guid			FK, User
+  idea        Idea    @relation("ideaHistory", fields: [ideaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ideaId      String // IdeaId	Guid			FK, Idea
-  description String? // IdeaId	Guid			FK, Idea
+  description String?
 
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -344,11 +366,13 @@ enum IdeaStatus {
 model Idea {
   id String @id @default(cuid())
 
-  title      String // Title	String		 	Tiêu đề
-  content    String? // Content	String		x	Nội dung
-  status     IdeaStatus @default(Waiting) // Status	Enum	"Waiting Editing Approved Rejected"
-  editingBy  String // EditingBy	Guid			FK, User
-  approvedBy String // ApprovedBy	Guid			FK, User
+  title        String // Title	String		 	Tiêu đề
+  content      String? // Content	String		x	Nội dung
+  status       IdeaStatus @default(Waiting) // Status	Enum	"Waiting Editing Approved Rejected"
+  editingBy    User       @relation("editingByHistory", fields: [editingById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  editingById  String // EditingBy	Guid			FK, User
+  approvedBy   User       @relation("approvedByHistory", fields: [approvedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  approvedById String // ApprovedBy	Guid			FK, User
 
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -358,14 +382,20 @@ model Idea {
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
 
+  createdPostIdeas PostIdea[] @relation("ideaHistory")
+  createdUserVotes UserVote[] @relation("ideaHistory")
+
   @@map("ideas")
 }
 
 model UserVote {
   id String @id @default(cuid())
 
+  post        Post    @relation("postHistory", fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   postId      String // PostId	Guid			FK, Post
+  user        User    @relation("userHistory", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId      String // UserId	Guid			FK, User
+  idea        Idea    @relation("ideaHistory", fields: [ideaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ideaId      String // IdeaId	Guid			FK, Idea
   description String? // IdeaId	Guid			FK, Idea
 
@@ -399,8 +429,9 @@ model Department {
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
 
-  childs Department[] @relation("parentChain")
-  users  User[]       @relation("departmentHistory")
+  childs           Department[] @relation("parentChain")
+  users            User[]       @relation("departmentHistory")
+  createdFeedbacks Feedback[]   @relation("departmentHistory")
 
   @@map("departments")
 }
@@ -422,7 +453,8 @@ model Industry {
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
 
-  userIndustries UserIndustry[] @relation("industryHistory")
+  userIndustries   UserIndustry[] @relation("industryHistory")
+  createdFeedbacks Feedback[]     @relation("industryHistory")
 
   @@map("industries")
 }
@@ -446,7 +478,8 @@ model Topic {
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
 
-  childs Topic[] @relation("parentChain")
+  childs            Topic[]     @relation("parentChain")
+  createdPostTopics PostTopic[] @relation("topicHistory")
 
   @@map("topics")
 }
@@ -467,6 +500,8 @@ model Tag {
   createdById String?
   updatedBy   User?     @relation("updatedByHistory", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: SetNull)
   updatedById String?
+
+  createdPostTags PostTag[] @relation("tagHistory")
 
   @@map("tags")
 }
