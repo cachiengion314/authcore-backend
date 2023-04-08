@@ -1,30 +1,29 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { PrismaClientManager } from '../db/client-manager.provider'
 import { findManyCursorConnection } from 'src/common/prisma-relay'
-import { DepartmentConnection } from './models/user-connection.model'
-import { FindManyDepartmentArgs } from 'src/@generated/department/find-many-department.args'
-import { FindUniqueDepartmentArgs } from 'src/@generated/department/find-unique-department.args'
-import { DepartmentService } from './department.service'
-import { Department } from 'src/@generated/department/department.model'
-import { CreateOneDepartmentArgs } from 'src/@generated/department/create-one-department.args'
+import { IndustryConnection } from './models/industry-connection.model'
 import { GqlReq } from 'src/common/decorators/req-decorator'
 import { UseGuards } from '@nestjs/common'
 import { GqlJwtAuthGuard } from '../auth/gql-auth.guard'
-import { UpdateOneDepartmentArgs } from 'src/@generated/department/update-one-department.args'
-import { UpdateManyDepartmentArgs } from 'src/@generated/department/update-many-department.args'
-import { CreateManyDepartmentArgs } from 'src/@generated/department/create-many-department.args'
-import { DeleteManyDepartmentArgs } from 'src/@generated/department/delete-many-department.args'
+import { IndustryService } from './industry.service'
+import { FindManyIndustryArgs } from 'src/@generated/industry/find-many-industry.args'
+import { FindUniqueIndustryArgs } from 'src/@generated/industry/find-unique-industry.args'
 import { Industry } from 'src/@generated/industry/industry.model'
+import { CreateOneIndustryArgs } from 'src/@generated/industry/create-one-industry.args'
+import { CreateManyIndustryArgs } from 'src/@generated/industry/create-many-industry.args'
+import { UpdateOneIndustryArgs } from 'src/@generated/industry/update-one-industry.args'
+import { UpdateManyIndustryArgs } from 'src/@generated/industry/update-many-industry.args'
+import { DeleteManyIndustryArgs } from 'src/@generated/industry/delete-many-industry.args'
 
 @Resolver(() => Industry)
-export class DepartmentResolver {
+export class IndustryResolver {
   constructor(
     private readonly prismaClientManager: PrismaClientManager,
-    private readonly service: DepartmentService
+    private readonly service: IndustryService
   ) {}
 
-  @Query(() => DepartmentConnection)
-  async departments(@Args() args: FindManyDepartmentArgs) {
+  @Query(() => IndustryConnection)
+  async industries(@Args() args: FindManyIndustryArgs) {
     const result = await findManyCursorConnection(
       (params) => {
         return this.prismaClientManager.getClient().department.findMany({
@@ -44,46 +43,40 @@ export class DepartmentResolver {
     return result
   }
 
-  @Query(() => Department)
-  async department(@Args() args: FindUniqueDepartmentArgs): Promise<Department> {
+  @Query(() => Industry)
+  async industry(@Args() args: FindUniqueIndustryArgs): Promise<Industry> {
     return this.service.findOne(args)
   }
 
   @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => Department)
-  async saveDepartment(
-    @GqlReq() req: any,
-    @Args() args: CreateOneDepartmentArgs
-  ): Promise<Department> {
+  @Mutation(() => Industry)
+  async saveIndustry(@GqlReq() req: any, @Args() args: CreateOneIndustryArgs): Promise<Industry> {
     const { user } = req
     return this.service.createOne(args, user)
   }
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Number)
-  async saveDepartments(
-    @GqlReq() req: any,
-    @Args() args: CreateManyDepartmentArgs
-  ): Promise<number> {
+  async saveIndustries(@GqlReq() req: any, @Args() args: CreateManyIndustryArgs): Promise<number> {
     const { user } = req
     return this.service.createMany(args, user)
   }
 
   @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => Department)
-  async updateDepartment(
+  @Mutation(() => Industry)
+  async updateIndustry(
     @GqlReq() req: any,
-    @Args() updateOneTagArgs: UpdateOneDepartmentArgs
-  ): Promise<Department> {
+    @Args() updateOneTagArgs: UpdateOneIndustryArgs
+  ): Promise<Industry> {
     const { user } = req
     return this.service.updateOne(updateOneTagArgs, user)
   }
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Number)
-  async updateDepartments(
+  async updateIndustries(
     @GqlReq() req: any,
-    @Args() args: UpdateManyDepartmentArgs
+    @Args() args: UpdateManyIndustryArgs
   ): Promise<number> {
     const { user } = req
     return this.service.updateMany(args, user)
@@ -91,9 +84,9 @@ export class DepartmentResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Number)
-  async deleteDepartments(
+  async deleteIndustries(
     @GqlReq() req: any,
-    @Args() args: DeleteManyDepartmentArgs
+    @Args() args: DeleteManyIndustryArgs
   ): Promise<number> {
     return this.service.softDeletes(args)
   }
