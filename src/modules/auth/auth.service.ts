@@ -48,13 +48,13 @@ export class AuthService {
     }
   }
 
-  async login(tenantId: string, username: string, password: string): Promise<Token> {
+  async login(tenantId: string, email: string, password: string): Promise<Token> {
     const user = await this.prismaClientManager
       .getClient(tenantId)
-      .user.findUnique({ where: { username } })
+      .user.findUnique({ where: { email } })
 
     if (!user) {
-      throw new NotFoundException(`No user found for username: ${username}`)
+      throw new NotFoundException(`No user found for email: ${email}`)
     }
 
     const passwordValid = await this.passwordService.validatePassword(password, user.password)

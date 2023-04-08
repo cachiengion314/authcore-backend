@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaClientManager } from '../db/client-manager.provider'
 import { execCommand, getDatabaseUrlFrom } from 'src/common/utility'
-import { CreateOneUserArgs } from 'src/@generated/user/create-one-user.args'
 import { AuthService } from '../auth/auth.service'
 import { throwBadRequestException } from 'src/common/utility/exception'
 import { UserWhereInput } from 'src/@generated/user/user-where.input'
@@ -13,7 +12,7 @@ export class UserService {
     private readonly authService: AuthService
   ) {}
 
-  async createOneTenant(args: CreateOneUserArgs) {
+  async createOneTenant(args) {
     const { tenantId } = args.data
     if (!tenantId) {
       throwBadRequestException('tenantId is empty!')
@@ -35,6 +34,8 @@ export class UserService {
       lastname,
       tenantId,
       databaseUrl: DATABASE_URL,
+      isAdmin: false,
+      originalId: `azure-${tenantId}`,
     })
     if (!result) {
       throwBadRequestException()

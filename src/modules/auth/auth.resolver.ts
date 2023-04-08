@@ -14,7 +14,7 @@ export class AuthResolver {
   async login(@Args('data') data: LoginInput) {
     const { accessToken, refreshToken } = await this.auth.login(
       data.tenantId,
-      data.username.toLowerCase(),
+      data.email,
       data.password
     )
 

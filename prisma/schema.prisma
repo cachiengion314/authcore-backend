@@ -89,6 +89,7 @@ model User {
   backgroundUrl String? // BackgroundUrl	String		x	Đường dẫn ảnh nền
   isAdmin       Boolean // IsAdmin	Bool			Quản trị
   status        ActiveStatus @default(Active) // Status	Enum	"Active
+  password      String?
 
   deletedAt   DateTime?
   createdAt   DateTime  @default(now())
@@ -109,7 +110,9 @@ model User {
   createdPostIdeas      PostIdea[]     @relation("userHistory")
   editedIdeas           Idea[]         @relation("editingByHistory")
   approvedIdeas         Idea[]         @relation("approvedByHistory")
-  createdUserVote       UserVote[]     @relation("userHistory")
+  createdUserVotes      UserVote[]     @relation("userHistory")
+  editedPosts           Post[]         @relation("editingByHistory")
+  approvedPosts         Post[]         @relation("approvedByHistory")
 
   createIdeas       Idea[]       @relation("createdByHistory")
   updateIdeas       Idea[]       @relation("updatedByHistory")
@@ -238,20 +241,22 @@ enum PostStatus {
 model Post {
   id String @id @default(cuid())
 
-  slug        String     @unique // Slug	String			Unique, Đường dẫn để rewrite
-  type        PostType   @default(Post) // Type	Enum	"Announcement Post Campaign"		
-  title       String // Title	String			Tiêu đề
-  subTitle    String? // SubTitle	String		x	Tiêu đề phụ
-  head        String // Head	String			Mô tả ngắn
-  content     String // Content	String			Nội dung
-  tag         String // Tag	String			Các từ khóa, cách nhau bởi dấu phẩy
-  viewCount   Int // ViewCount	Number			Lượt xem
-  likeCount   Int // LikeCount	Number			Lượt thích
-  status      PostStatus // Status	Enum	"Editing WaitingForApproval Published Suspended"
-  editingBy   String? // EditingBy	Guid		x	FK, User
-  approvedBy  String? // ApprovedBy	Guid		x	FK, User
-  publishedAt DateTime // PublishedAt	Date			Ngày xuất bản
-  expiredAt   DateTime // ExpiredAt	Date			Ngày hết hạn
+  slug         String     @unique // Slug	String			Unique, Đường dẫn để rewrite
+  type         PostType   @default(Post) // Type	Enum	"Announcement Post Campaign"		
+  title        String // Title	String			Tiêu đề
+  subTitle     String? // SubTitle	String		x	Tiêu đề phụ
+  head         String // Head	String			Mô tả ngắn
+  content      String // Content	String			Nội dung
+  tag          String // Tag	String			Các từ khóa, cách nhau bởi dấu phẩy
+  viewCount    Int // ViewCount	Number			Lượt xem
+  likeCount    Int // LikeCount	Number			Lượt thích
+  status       PostStatus // Status	Enum	"Editing WaitingForApproval Published Suspended"
+  editingBy    User?      @relation("editingByHistory", fields: [editingById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  editingById  String? // EditingBy	Guid		x	FK, User
+  approvedBy   User?      @relation("approvedByHistory", fields: [approvedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  approvedById String? // ApprovedBy	Guid		x	FK, User
+  publishedAt  DateTime // PublishedAt	Date			Ngày xuất bản
+  expiredAt    DateTime // ExpiredAt	Date			Ngày hết hạn
 
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -397,7 +402,7 @@ model UserVote {
   userId      String // UserId	Guid			FK, User
   idea        Idea    @relation("ideaHistory", fields: [ideaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ideaId      String // IdeaId	Guid			FK, Idea
-  description String? // IdeaId	Guid			FK, Idea
+  description String?
 
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?

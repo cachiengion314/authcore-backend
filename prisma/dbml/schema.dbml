@@ -4,14 +4,22 @@
 
 Table users {
   id String [pk]
-  username String [unique, not null]
+  code String [unique]
+  originalId String [unique, not null]
+  fullName String
+  department departments
+  departmentId String
+  jobTitle String
+  position String
+  dateOfBirth DateTime
+  gender Gender [default: 'Male']
   email String [unique, not null]
-  roleType RoleType [not null, default: 'Developer']
-  password String [note: '@HideField({ output: true, input: false })']
-  firstname String
-  lastname String
-  tenantId String
-  databaseUrl String
+  phoneNumber String
+  avartarUrl String
+  backgroundUrl String
+  isAdmin Boolean [not null]
+  status ActiveStatus [not null, default: 'Active']
+  password String
   deletedAt DateTime
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -21,8 +29,39 @@ Table users {
   updatedById String
   createdUsers users [not null]
   updatedUsers users [not null]
+  createdUserIndustries user_industries [not null]
+  createdUserAwards user_awards [not null]
+  createdUserGroups user_groups [not null]
+  editedFeedbacks feedbacks [not null]
+  resolvedFeedbacks feedbacks [not null]
+  createdPostIdeas post_ideas [not null]
+  editedIdeas ideas [not null]
+  approvedIdeas ideas [not null]
+  createdUserVotes user_votes [not null]
+  editedPosts posts [not null]
+  approvedPosts posts [not null]
+  createIdeas ideas [not null]
+  updateIdeas ideas [not null]
+  createFeedbacks feedbacks [not null]
+  updateFeedbacks feedbacks [not null]
+  createPosts posts [not null]
+  updatePosts posts [not null]
   createRoles roles [not null]
   updateRoles roles [not null]
+  createAwards awards [not null]
+  updateAwards awards [not null]
+  createTags tags [not null]
+  updateTags tags [not null]
+  createTopics topics [not null]
+  updateTopics topics [not null]
+  createIndustries industries [not null]
+  updateIndustries industries [not null]
+  createDepartments departments [not null]
+  updateDepartments departments [not null]
+  createUserVotes user_votes [not null]
+  updateUserVotes user_votes [not null]
+  createPostIdeas post_ideas [not null]
+  updatePostIdeas post_ideas [not null]
 }
 
 Table roles {
@@ -50,12 +89,321 @@ Table casbin_rules {
   v5 String
 }
 
+Table user_industries {
+  id String [pk]
+  user users [not null]
+  userId String [not null]
+  industry industries [not null]
+  industryId String [not null]
+  description String
+}
+
+Table user_awards {
+  id String [pk]
+  user users [not null]
+  userId String [not null]
+  award awards [not null]
+  awardId String [not null]
+  receivedAt DateTime [not null]
+}
+
+Table groups {
+  id String [pk]
+  name String [not null]
+  shortDescription String
+  longDescription String
+  thumbnailUrl String
+  backgroundUrl String
+  memberCount Int [not null]
+  postCount Int [not null]
+  status ActiveStatus [not null, default: 'Active']
+  createdUserGroups user_groups [not null]
+}
+
+Table user_groups {
+  id String [pk]
+  user users [not null]
+  userId String [not null]
+  group groups [not null]
+  groupId String [not null]
+  joinedAt DateTime [not null]
+  status ActiveStatus [not null, default: 'Active']
+}
+
+Table posts {
+  id String [pk]
+  slug String [unique, not null]
+  type PostType [not null, default: 'Post']
+  title String [not null]
+  subTitle String
+  head String [not null]
+  content String [not null]
+  tag String [not null]
+  viewCount Int [not null]
+  likeCount Int [not null]
+  status PostStatus [not null]
+  editingBy users
+  editingById String
+  approvedBy users
+  approvedById String
+  publishedAt DateTime [not null]
+  expiredAt DateTime [not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+  createdPostTopics post_topics [not null]
+  createdPostTags post_tags [not null]
+  createdPostIdeas post_ideas [not null]
+  createdUserVotes user_votes [not null]
+}
+
+Table post_topics {
+  id String [pk]
+  post posts [not null]
+  postId String [not null]
+  topic topics [not null]
+  topicId String [not null]
+  description String
+}
+
+Table post_tags {
+  id String [pk]
+  post posts [not null]
+  postId String [not null]
+  tag tags [not null]
+  tagId String [not null]
+  description String
+}
+
+Table feedbacks {
+  id String [pk]
+  type FeedbackType [not null, default: 'Feedback']
+  industry industries [not null]
+  industryId String [not null]
+  department departments [not null]
+  departmentId String [not null]
+  title String [not null]
+  content String
+  reply String
+  attachmentUrl String
+  status FeedbackStatus [not null, default: 'Waiting']
+  editingBy users [not null]
+  editingById String [not null]
+  resolvedBy users [not null]
+  resolvedById String [not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+}
+
+Table post_ideas {
+  id String [pk]
+  post posts [not null]
+  postId String [not null]
+  user users [not null]
+  userId String [not null]
+  idea ideas [not null]
+  ideaId String [not null]
+  description String
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+}
+
+Table ideas {
+  id String [pk]
+  title String [not null]
+  content String
+  status IdeaStatus [not null, default: 'Waiting']
+  editingBy users [not null]
+  editingById String [not null]
+  approvedBy users [not null]
+  approvedById String [not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+  createdPostIdeas post_ideas [not null]
+  createdUserVotes user_votes [not null]
+}
+
+Table user_votes {
+  id String [pk]
+  post posts [not null]
+  postId String [not null]
+  user users [not null]
+  userId String [not null]
+  idea ideas [not null]
+  ideaId String [not null]
+  description String
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+}
+
+Table departments {
+  id String [pk]
+  code String [unique]
+  name String [not null]
+  description String
+  parent departments
+  parentId String
+  sortOrder Int [not null, default: 0]
+  status ActiveStatus [not null, default: 'Active']
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+  childs departments [not null]
+  users users [not null]
+  createdFeedbacks feedbacks [not null]
+}
+
+Table industries {
+  id String [pk]
+  code String [unique]
+  name String [not null]
+  description String
+  sortOrder Int [not null, default: 0]
+  status ActiveStatus [not null, default: 'Active']
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+  userIndustries user_industries [not null]
+  createdFeedbacks feedbacks [not null]
+}
+
+Table topics {
+  id String [pk]
+  slug String [unique, not null]
+  name String [not null]
+  description String
+  parent topics
+  parentId String
+  sortOrder Int [not null, default: 0]
+  status ActiveStatus [not null, default: 'Active']
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+  childs topics [not null]
+  createdPostTopics post_topics [not null]
+}
+
+Table tags {
+  id String [pk]
+  code String
+  name String [not null]
+  description String
+  sortOrder Int [not null, default: 0]
+  status ActiveStatus [not null, default: 'Active']
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+  createdPostTags post_tags [not null]
+}
+
+Table awards {
+  id String [pk]
+  code String
+  name String [not null]
+  description String
+  thumbnailUrl String
+  sortOrder Int [not null, default: 0]
+  status ActiveStatus [not null, default: 'Active']
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  createdBy users
+  createdById String
+  updatedBy users
+  updatedById String
+  createdUserAward user_awards [not null]
+}
+
+Enum ActiveStatus {
+  Active
+  Locked
+}
+
+Enum Gender {
+  Male
+  Female
+}
+
 Enum RoleType {
   Root
   Admin
   Developer
   Customer
 }
+
+Enum PostType {
+  Post
+  Campaign
+  Announcement
+}
+
+Enum PostStatus {
+  Editing
+  Published
+  Suspended
+  WaitingForApproval
+}
+
+Enum FeedbackType {
+  Feedback
+  Question
+}
+
+Enum FeedbackStatus {
+  Waiting
+  Editing
+  Completed
+  Rejected
+}
+
+Enum IdeaStatus {
+  Waiting
+  Editing
+  Approved
+  Rejected
+}
+
+Ref: users.departmentId - departments.id [delete: Set Null]
 
 Ref: users.createdById - users.id [delete: Set Null]
 
@@ -64,3 +412,95 @@ Ref: users.updatedById - users.id [delete: Set Null]
 Ref: roles.createdById > users.id [delete: Set Null]
 
 Ref: roles.updatedById > users.id [delete: Set Null]
+
+Ref: user_industries.userId > users.id [delete: Cascade]
+
+Ref: user_industries.industryId > industries.id [delete: Cascade]
+
+Ref: user_awards.userId > users.id [delete: Cascade]
+
+Ref: user_awards.awardId > awards.id [delete: Cascade]
+
+Ref: user_groups.userId > users.id [delete: Cascade]
+
+Ref: user_groups.groupId > groups.id [delete: Cascade]
+
+Ref: posts.editingById > users.id [delete: Cascade]
+
+Ref: posts.approvedById > users.id [delete: Cascade]
+
+Ref: posts.createdById > users.id [delete: Cascade]
+
+Ref: posts.updatedById > users.id [delete: Cascade]
+
+Ref: post_topics.postId > posts.id [delete: Cascade]
+
+Ref: post_topics.topicId > topics.id [delete: Cascade]
+
+Ref: post_tags.postId > posts.id [delete: Cascade]
+
+Ref: post_tags.tagId > tags.id [delete: Cascade]
+
+Ref: feedbacks.industryId > industries.id [delete: Cascade]
+
+Ref: feedbacks.departmentId > departments.id [delete: Cascade]
+
+Ref: feedbacks.editingById > users.id [delete: Cascade]
+
+Ref: feedbacks.resolvedById > users.id [delete: Cascade]
+
+Ref: feedbacks.createdById > users.id [delete: Cascade]
+
+Ref: feedbacks.updatedById > users.id [delete: Cascade]
+
+Ref: post_ideas.postId > posts.id [delete: Cascade]
+
+Ref: post_ideas.userId > users.id [delete: Cascade]
+
+Ref: post_ideas.ideaId > ideas.id [delete: Cascade]
+
+Ref: post_ideas.createdById > users.id [delete: Cascade]
+
+Ref: post_ideas.updatedById > users.id [delete: Cascade]
+
+Ref: ideas.editingById > users.id [delete: Cascade]
+
+Ref: ideas.approvedById > users.id [delete: Cascade]
+
+Ref: ideas.createdById > users.id [delete: Cascade]
+
+Ref: ideas.updatedById > users.id [delete: Cascade]
+
+Ref: user_votes.postId > posts.id [delete: Cascade]
+
+Ref: user_votes.userId > users.id [delete: Cascade]
+
+Ref: user_votes.ideaId > ideas.id [delete: Cascade]
+
+Ref: user_votes.createdById > users.id [delete: Cascade]
+
+Ref: user_votes.updatedById > users.id [delete: Cascade]
+
+Ref: departments.parentId - departments.id [delete: Set Null]
+
+Ref: departments.createdById - users.id [delete: Set Null]
+
+Ref: departments.updatedById - users.id [delete: Set Null]
+
+Ref: industries.createdById > users.id [delete: Set Null]
+
+Ref: industries.updatedById > users.id [delete: Set Null]
+
+Ref: topics.parentId - topics.id [delete: Set Null]
+
+Ref: topics.createdById > users.id [delete: Set Null]
+
+Ref: topics.updatedById > users.id [delete: Set Null]
+
+Ref: tags.createdById > users.id [delete: Set Null]
+
+Ref: tags.updatedById > users.id [delete: Set Null]
+
+Ref: awards.createdById > users.id [delete: Set Null]
+
+Ref: awards.updatedById > users.id [delete: Set Null]

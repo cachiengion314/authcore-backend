@@ -19,7 +19,9 @@ const prisma = new PrismaClient({
 async function main() {
   const models = Prisma.dmmf.datamodel.models
   await clearDatabase(models)
-  await createTenantAdmin()
+  const { admin } = await seedTenantAdmin()
+
+  await seedDepartment(admin)
 }
 
 main()
@@ -34,28 +36,26 @@ main()
  * --------------- * ------private-utilities-function--------- * ---------------
  */
 
-async function createTenantAdmin() {
+async function seedTenantAdmin() {
   const salt = await bcrypt.genSalt(10)
   const hash = await bcrypt.hash('12345678', salt)
 
   const root = await prisma.user.create({
     data: {
-      username: 'root',
-      firstname: 'root',
-      lastname: 'root',
-      roleType: RoleType.Root,
       password: hash,
+      fullName: 'root',
+      originalId: 'azure002',
       email: `root@root.com`,
+      isAdmin: true,
     },
   })
   const admin = await prisma.user.create({
     data: {
-      username: 'admin',
-      firstname: 'admin',
-      lastname: 'admin',
-      roleType: RoleType.Admin,
       password: hash,
+      fullName: 'admin',
+      originalId: 'azure001',
       email: `admin@admin.com`,
+      isAdmin: true,
       createdBy: { connect: { id: root.id } },
       updatedBy: { connect: { id: root.id } },
     },
@@ -126,6 +126,29 @@ async function createTenantAdmin() {
   })
 
   return { admin, root }
+}
+
+async function seedDepartment(admin) {
+  let data = [
+    {
+      code: 'd001',
+      name: 'department1',
+      description: 'department1 description',
+      createdById: admin.id,
+      updatedById: admin.id,
+    },
+    {
+      code: 'd002',
+      name: 'department2',
+      description: 'department2 description',
+      createdById: admin.id,
+      updatedById: admin.id,
+    },
+  ]
+
+  await prisma.department.createMany({
+    data: data,
+  })
 }
 
 async function clearDatabase(models) {

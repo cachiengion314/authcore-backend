@@ -25,4 +25,10 @@ export class SignupInput {
 
   @Field({ nullable: true })
   databaseUrl?: string
+
+  @Field({ nullable: false })
+  originalId: string
+
+  @Field({ nullable: false })
+  isAdmin: boolean
 }
