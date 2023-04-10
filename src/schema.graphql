@@ -35,8 +35,24 @@ type Award {
   updatedById: String
 }
 
+type AwardConnection {
+  nodes: [Award!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type AwardCount {
   createdUserAward: Int!
+}
+
+input AwardCreateInput {
+  code: String
+  createdUserAward: UserAwardCreateNestedManyWithoutAwardInput
+  description: String
+  name: String!
+  sortOrder: Int
+  status: ActiveStatus
+  thumbnailUrl: String
 }
 
 input AwardCreateManyCreatedByInput {
@@ -51,6 +67,15 @@ input AwardCreateManyCreatedByInput {
 input AwardCreateManyCreatedByInputEnvelope {
   data: [AwardCreateManyCreatedByInput!]!
   skipDuplicates: Boolean
+}
+
+input AwardCreateManyInput {
+  code: String
+  description: String
+  name: String!
+  sortOrder: Int
+  status: ActiveStatus
+  thumbnailUrl: String
 }
 
 input AwardCreateManyUpdatedByInput {
@@ -133,6 +158,39 @@ input AwardOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input AwardOrderByWithRelationInput {
+  code: SortOrder
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  createdUserAward: UserAwardOrderByRelationAggregateInput
+  deletedAt: SortOrder
+  description: SortOrder
+  id: SortOrder
+  name: SortOrder
+  sortOrder: SortOrder
+  status: SortOrder
+  thumbnailUrl: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+}
+
+enum AwardScalarFieldEnum {
+  code
+  createdAt
+  createdById
+  deletedAt
+  description
+  id
+  name
+  sortOrder
+  status
+  thumbnailUrl
+  updatedAt
+  updatedById
+}
+
 input AwardScalarWhereInput {
   AND: [AwardScalarWhereInput!]
   NOT: [AwardScalarWhereInput!]
@@ -149,6 +207,17 @@ input AwardScalarWhereInput {
   thumbnailUrl: StringNullableFilter
   updatedAt: DateTimeFilter
   updatedById: StringNullableFilter
+}
+
+input AwardUpdateInput {
+  code: NullableStringFieldUpdateOperationsInput
+  createdUserAward: UserAwardUpdateManyWithoutAwardNestedInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  sortOrder: IntFieldUpdateOperationsInput
+  status: EnumActiveStatusFieldUpdateOperationsInput
+  thumbnailUrl: NullableStringFieldUpdateOperationsInput
 }
 
 input AwardUpdateManyMutationInput {
@@ -976,6 +1045,25 @@ type Feedback {
   updatedById: String
 }
 
+type FeedbackConnection {
+  nodes: [Feedback!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input FeedbackCreateInput {
+  attachmentUrl: String
+  content: String
+  department: DepartmentCreateNestedOneWithoutCreatedFeedbacksInput!
+  editingBy: UserCreateNestedOneWithoutEditedFeedbacksInput!
+  industry: IndustryCreateNestedOneWithoutCreatedFeedbacksInput!
+  reply: String
+  resolvedBy: UserCreateNestedOneWithoutResolvedFeedbacksInput!
+  status: FeedbackStatus
+  title: String!
+  type: FeedbackType
+}
+
 input FeedbackCreateManyCreatedByInput {
   attachmentUrl: String
   content: String
@@ -1043,6 +1131,19 @@ input FeedbackCreateManyIndustryInput {
 input FeedbackCreateManyIndustryInputEnvelope {
   data: [FeedbackCreateManyIndustryInput!]!
   skipDuplicates: Boolean
+}
+
+input FeedbackCreateManyInput {
+  attachmentUrl: String
+  content: String
+  departmentId: String!
+  editingById: String!
+  industryId: String!
+  reply: String
+  resolvedById: String!
+  status: FeedbackStatus
+  title: String!
+  type: FeedbackType
 }
 
 input FeedbackCreateManyResolvedByInput {
@@ -1218,6 +1319,50 @@ input FeedbackOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input FeedbackOrderByWithRelationInput {
+  attachmentUrl: SortOrder
+  content: SortOrder
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  deletedAt: SortOrder
+  department: DepartmentOrderByWithRelationInput
+  departmentId: SortOrder
+  editingBy: UserOrderByWithRelationInput
+  editingById: SortOrder
+  id: SortOrder
+  industry: IndustryOrderByWithRelationInput
+  industryId: SortOrder
+  reply: SortOrder
+  resolvedBy: UserOrderByWithRelationInput
+  resolvedById: SortOrder
+  status: SortOrder
+  title: SortOrder
+  type: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+}
+
+enum FeedbackScalarFieldEnum {
+  attachmentUrl
+  content
+  createdAt
+  createdById
+  deletedAt
+  departmentId
+  editingById
+  id
+  industryId
+  reply
+  resolvedById
+  status
+  title
+  type
+  updatedAt
+  updatedById
+}
+
 input FeedbackScalarWhereInput {
   AND: [FeedbackScalarWhereInput!]
   NOT: [FeedbackScalarWhereInput!]
@@ -1250,6 +1395,20 @@ enum FeedbackStatus {
 enum FeedbackType {
   Feedback
   Question
+}
+
+input FeedbackUpdateInput {
+  attachmentUrl: NullableStringFieldUpdateOperationsInput
+  content: NullableStringFieldUpdateOperationsInput
+  department: DepartmentUpdateOneRequiredWithoutCreatedFeedbacksNestedInput
+  editingBy: UserUpdateOneRequiredWithoutEditedFeedbacksNestedInput
+  id: StringFieldUpdateOperationsInput
+  industry: IndustryUpdateOneRequiredWithoutCreatedFeedbacksNestedInput
+  reply: NullableStringFieldUpdateOperationsInput
+  resolvedBy: UserUpdateOneRequiredWithoutResolvedFeedbacksNestedInput
+  status: EnumFeedbackStatusFieldUpdateOperationsInput
+  title: StringFieldUpdateOperationsInput
+  type: EnumFeedbackTypeFieldUpdateOperationsInput
 }
 
 input FeedbackUpdateManyMutationInput {
@@ -1661,9 +1820,25 @@ type Idea {
   updatedById: String
 }
 
+type IdeaConnection {
+  nodes: [Idea!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type IdeaCount {
   createdPostIdeas: Int!
   createdUserVotes: Int!
+}
+
+input IdeaCreateInput {
+  approvedBy: UserCreateNestedOneWithoutApprovedIdeasInput!
+  content: String
+  createdPostIdeas: PostIdeaCreateNestedManyWithoutIdeaInput
+  createdUserVotes: UserVoteCreateNestedManyWithoutIdeaInput
+  editingBy: UserCreateNestedOneWithoutEditedIdeasInput!
+  status: IdeaStatus
+  title: String!
 }
 
 input IdeaCreateManyApprovedByInput {
@@ -1701,6 +1876,14 @@ input IdeaCreateManyEditingByInput {
 input IdeaCreateManyEditingByInputEnvelope {
   data: [IdeaCreateManyEditingByInput!]!
   skipDuplicates: Boolean
+}
+
+input IdeaCreateManyInput {
+  approvedById: String!
+  content: String
+  editingById: String!
+  status: IdeaStatus
+  title: String!
 }
 
 input IdeaCreateManyUpdatedByInput {
@@ -1836,6 +2019,40 @@ input IdeaOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input IdeaOrderByWithRelationInput {
+  approvedBy: UserOrderByWithRelationInput
+  approvedById: SortOrder
+  content: SortOrder
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  createdPostIdeas: PostIdeaOrderByRelationAggregateInput
+  createdUserVotes: UserVoteOrderByRelationAggregateInput
+  deletedAt: SortOrder
+  editingBy: UserOrderByWithRelationInput
+  editingById: SortOrder
+  id: SortOrder
+  status: SortOrder
+  title: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+}
+
+enum IdeaScalarFieldEnum {
+  approvedById
+  content
+  createdAt
+  createdById
+  deletedAt
+  editingById
+  id
+  status
+  title
+  updatedAt
+  updatedById
+}
+
 input IdeaScalarWhereInput {
   AND: [IdeaScalarWhereInput!]
   NOT: [IdeaScalarWhereInput!]
@@ -1858,6 +2075,17 @@ enum IdeaStatus {
   Editing
   Rejected
   Waiting
+}
+
+input IdeaUpdateInput {
+  approvedBy: UserUpdateOneRequiredWithoutApprovedIdeasNestedInput
+  content: NullableStringFieldUpdateOperationsInput
+  createdPostIdeas: PostIdeaUpdateManyWithoutIdeaNestedInput
+  createdUserVotes: UserVoteUpdateManyWithoutIdeaNestedInput
+  editingBy: UserUpdateOneRequiredWithoutEditedIdeasNestedInput
+  id: StringFieldUpdateOperationsInput
+  status: EnumIdeaStatusFieldUpdateOperationsInput
+  title: StringFieldUpdateOperationsInput
 }
 
 input IdeaUpdateManyMutationInput {
@@ -2118,9 +2346,25 @@ type Industry {
   userIndustries: [UserIndustry!]
 }
 
+type IndustryConnection {
+  nodes: [Industry!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type IndustryCount {
   createdFeedbacks: Int!
   userIndustries: Int!
+}
+
+input IndustryCreateInput {
+  code: String
+  createdFeedbacks: FeedbackCreateNestedManyWithoutIndustryInput
+  description: String
+  name: String!
+  sortOrder: Int
+  status: ActiveStatus
+  userIndustries: UserIndustryCreateNestedManyWithoutIndustryInput
 }
 
 input IndustryCreateManyCreatedByInput {
@@ -2134,6 +2378,14 @@ input IndustryCreateManyCreatedByInput {
 input IndustryCreateManyCreatedByInputEnvelope {
   data: [IndustryCreateManyCreatedByInput!]!
   skipDuplicates: Boolean
+}
+
+input IndustryCreateManyInput {
+  code: String
+  description: String
+  name: String!
+  sortOrder: Int
+  status: ActiveStatus
 }
 
 input IndustryCreateManyUpdatedByInput {
@@ -2233,6 +2485,38 @@ input IndustryOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input IndustryOrderByWithRelationInput {
+  code: SortOrder
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  createdFeedbacks: FeedbackOrderByRelationAggregateInput
+  deletedAt: SortOrder
+  description: SortOrder
+  id: SortOrder
+  name: SortOrder
+  sortOrder: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+  userIndustries: UserIndustryOrderByRelationAggregateInput
+}
+
+enum IndustryScalarFieldEnum {
+  code
+  createdAt
+  createdById
+  deletedAt
+  description
+  id
+  name
+  sortOrder
+  status
+  updatedAt
+  updatedById
+}
+
 input IndustryScalarWhereInput {
   AND: [IndustryScalarWhereInput!]
   NOT: [IndustryScalarWhereInput!]
@@ -2248,6 +2532,17 @@ input IndustryScalarWhereInput {
   status: EnumActiveStatusFilter
   updatedAt: DateTimeFilter
   updatedById: StringNullableFilter
+}
+
+input IndustryUpdateInput {
+  code: NullableStringFieldUpdateOperationsInput
+  createdFeedbacks: FeedbackUpdateManyWithoutIndustryNestedInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  sortOrder: IntFieldUpdateOperationsInput
+  status: EnumActiveStatusFieldUpdateOperationsInput
+  userIndustries: UserIndustryUpdateManyWithoutIndustryNestedInput
 }
 
 input IndustryUpdateManyMutationInput {
@@ -2443,14 +2738,67 @@ input LoginInput {
 }
 
 type Mutation {
+  deleteAwards(where: AwardWhereInput): Int!
   deleteDepartments(where: DepartmentWhereInput): Int!
+  deleteFeedbacks(where: FeedbackWhereInput): Int!
+  deleteIdeas(where: IdeaWhereInput): Int!
+  deleteIndustries(where: IndustryWhereInput): Int!
+  deletePostTags(where: PostTagWhereInput): Int!
+  deletePostTopics(where: PostTopicWhereInput): Int!
+  deletePosts(where: PostWhereInput): Int!
+  deleteTopics(where: TopicWhereInput): Int!
+  deleteUserIndustries(where: UserIndustryWhereInput): Int!
+  deleteUserVotes(where: UserVoteWhereInput): Int!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  saveAward(data: AwardCreateInput!): Award!
+  saveAwards(data: [AwardCreateManyInput!]!, skipDuplicates: Boolean): Int!
   saveDepartment(data: DepartmentCreateInput!): Department!
   saveDepartments(data: [DepartmentCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveFeedback(data: FeedbackCreateInput!): Feedback!
+  saveFeedbacks(data: [FeedbackCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveIdea(data: IdeaCreateInput!): Idea!
+  saveIdeas(data: [IdeaCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveIndustries(data: [IndustryCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveIndustry(data: IndustryCreateInput!): Industry!
   saveOneTenant(data: UserCreateInput!): Token!
+  savePost(data: PostCreateInput!): Post!
+  savePostTag(data: PostTagCreateInput!): PostTag!
+  savePostTags(data: [PostTagCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  savePostTopic(data: PostTopicCreateInput!): PostTopic!
+  savePostTopics(data: [PostTopicCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  savePosts(data: [PostCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveTag(data: TagCreateInput!): Tag!
+  saveTags(data: [TagCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveTopic(data: TopicCreateInput!): Topic!
+  saveTopics(data: [TopicCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveUserIndustries(data: [UserIndustryCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  saveUserIndustry(data: UserIndustryCreateInput!): UserIndustry!
+  saveUserVote(data: UserVoteCreateInput!): UserVote!
+  saveUserVotes(data: [UserVoteCreateManyInput!]!, skipDuplicates: Boolean): Int!
+  updateAward(data: AwardUpdateInput!, where: AwardWhereUniqueInput!): Award!
+  updateAwards(data: AwardUpdateManyMutationInput!, where: AwardWhereInput): Int!
   updateDepartment(data: DepartmentUpdateInput!, where: DepartmentWhereUniqueInput!): Department!
   updateDepartments(data: DepartmentUpdateManyMutationInput!, where: DepartmentWhereInput): Int!
+  updateFeedback(data: FeedbackUpdateInput!, where: FeedbackWhereUniqueInput!): Feedback!
+  updateFeedbacks(data: FeedbackUpdateManyMutationInput!, where: FeedbackWhereInput): Int!
+  updateIdea(data: IdeaUpdateInput!, where: IdeaWhereUniqueInput!): Idea!
+  updateIdeas(data: IdeaUpdateManyMutationInput!, where: IdeaWhereInput): Int!
+  updateIndustries(data: IndustryUpdateManyMutationInput!, where: IndustryWhereInput): Int!
+  updateIndustry(data: IndustryUpdateInput!, where: IndustryWhereUniqueInput!): Industry!
+  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post!
+  updatePostTag(data: PostTagUpdateInput!, where: PostTagWhereUniqueInput!): PostTag!
+  updatePostTags(data: PostTagUpdateManyMutationInput!, where: PostTagWhereInput): Int!
+  updatePostTopic(data: PostTopicUpdateInput!, where: PostTopicWhereUniqueInput!): PostTopic!
+  updatePostTopics(data: PostTopicUpdateManyMutationInput!, where: PostTopicWhereInput): Int!
+  updatePosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): Int!
+  updateTag(data: TagUpdateInput!, where: TagWhereUniqueInput!): Tag!
+  updateTopic(data: TopicUpdateInput!, where: TopicWhereUniqueInput!): Topic!
+  updateTopics(data: TopicUpdateManyMutationInput!, where: TopicWhereInput): Int!
+  updateUserIndustries(data: UserIndustryUpdateManyMutationInput!, where: UserIndustryWhereInput): Int!
+  updateUserIndustry(data: UserIndustryUpdateInput!, where: UserIndustryWhereUniqueInput!): UserIndustry!
+  updateUserVote(data: UserVoteUpdateInput!, where: UserVoteWhereUniqueInput!): UserVote!
+  updateUserVotes(data: UserVoteUpdateManyMutationInput!, where: UserVoteWhereInput): Int!
 }
 
 input NestedBoolFilter {
@@ -2626,11 +2974,38 @@ type Post {
   viewCount: Int!
 }
 
+type PostConnection {
+  nodes: [Post!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type PostCount {
   createdPostIdeas: Int!
   createdPostTags: Int!
   createdPostTopics: Int!
   createdUserVotes: Int!
+}
+
+input PostCreateInput {
+  approvedBy: UserCreateNestedOneWithoutApprovedPostsInput
+  content: String!
+  createdPostIdeas: PostIdeaCreateNestedManyWithoutPostInput
+  createdPostTags: PostTagCreateNestedManyWithoutPostInput
+  createdPostTopics: PostTopicCreateNestedManyWithoutPostInput
+  createdUserVotes: UserVoteCreateNestedManyWithoutPostInput
+  editingBy: UserCreateNestedOneWithoutEditedPostsInput
+  expiredAt: DateTime!
+  head: String!
+  likeCount: Int!
+  publishedAt: DateTime!
+  slug: String!
+  status: PostStatus!
+  subTitle: String
+  tag: String!
+  title: String!
+  type: PostType
+  viewCount: Int!
 }
 
 input PostCreateManyApprovedByInput {
@@ -2695,6 +3070,23 @@ input PostCreateManyEditingByInput {
 input PostCreateManyEditingByInputEnvelope {
   data: [PostCreateManyEditingByInput!]!
   skipDuplicates: Boolean
+}
+
+input PostCreateManyInput {
+  approvedById: String
+  content: String!
+  editingById: String
+  expiredAt: DateTime!
+  head: String!
+  likeCount: Int!
+  publishedAt: DateTime!
+  slug: String!
+  status: PostStatus!
+  subTitle: String
+  tag: String!
+  title: String!
+  type: PostType
+  viewCount: Int!
 }
 
 input PostCreateManyUpdatedByInput {
@@ -3357,6 +3749,60 @@ input PostOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input PostOrderByWithRelationInput {
+  approvedBy: UserOrderByWithRelationInput
+  approvedById: SortOrder
+  content: SortOrder
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  createdPostIdeas: PostIdeaOrderByRelationAggregateInput
+  createdPostTags: PostTagOrderByRelationAggregateInput
+  createdPostTopics: PostTopicOrderByRelationAggregateInput
+  createdUserVotes: UserVoteOrderByRelationAggregateInput
+  deletedAt: SortOrder
+  editingBy: UserOrderByWithRelationInput
+  editingById: SortOrder
+  expiredAt: SortOrder
+  head: SortOrder
+  id: SortOrder
+  likeCount: SortOrder
+  publishedAt: SortOrder
+  slug: SortOrder
+  status: SortOrder
+  subTitle: SortOrder
+  tag: SortOrder
+  title: SortOrder
+  type: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+  viewCount: SortOrder
+}
+
+enum PostScalarFieldEnum {
+  approvedById
+  content
+  createdAt
+  createdById
+  deletedAt
+  editingById
+  expiredAt
+  head
+  id
+  likeCount
+  publishedAt
+  slug
+  status
+  subTitle
+  tag
+  title
+  type
+  updatedAt
+  updatedById
+  viewCount
+}
+
 input PostScalarWhereInput {
   AND: [PostScalarWhereInput!]
   NOT: [PostScalarWhereInput!]
@@ -3396,6 +3842,24 @@ type PostTag {
   post: Post!
   postId: String!
   tag: Tag!
+  tagId: String!
+}
+
+type PostTagConnection {
+  nodes: [PostTag!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input PostTagCreateInput {
+  description: String
+  post: PostCreateNestedOneWithoutCreatedPostTagsInput!
+  tag: TagCreateNestedOneWithoutCreatedPostTagsInput!
+}
+
+input PostTagCreateManyInput {
+  description: String
+  postId: String!
   tagId: String!
 }
 
@@ -3453,6 +3917,26 @@ input PostTagListRelationFilter {
   some: PostTagWhereInput
 }
 
+input PostTagOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PostTagOrderByWithRelationInput {
+  description: SortOrder
+  id: SortOrder
+  post: PostOrderByWithRelationInput
+  postId: SortOrder
+  tag: TagOrderByWithRelationInput
+  tagId: SortOrder
+}
+
+enum PostTagScalarFieldEnum {
+  description
+  id
+  postId
+  tagId
+}
+
 input PostTagScalarWhereInput {
   AND: [PostTagScalarWhereInput!]
   NOT: [PostTagScalarWhereInput!]
@@ -3461,6 +3945,13 @@ input PostTagScalarWhereInput {
   id: StringFilter
   postId: StringFilter
   tagId: StringFilter
+}
+
+input PostTagUpdateInput {
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  post: PostUpdateOneRequiredWithoutCreatedPostTagsNestedInput
+  tag: TagUpdateOneRequiredWithoutCreatedPostTagsNestedInput
 }
 
 input PostTagUpdateManyMutationInput {
@@ -3565,6 +4056,24 @@ type PostTopic {
   topicId: String!
 }
 
+type PostTopicConnection {
+  nodes: [PostTopic!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input PostTopicCreateInput {
+  description: String
+  post: PostCreateNestedOneWithoutCreatedPostTopicsInput!
+  topic: TopicCreateNestedOneWithoutCreatedPostTopicsInput!
+}
+
+input PostTopicCreateManyInput {
+  description: String
+  postId: String!
+  topicId: String!
+}
+
 input PostTopicCreateManyPostInput {
   description: String
   topicId: String!
@@ -3619,6 +4128,26 @@ input PostTopicListRelationFilter {
   some: PostTopicWhereInput
 }
 
+input PostTopicOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PostTopicOrderByWithRelationInput {
+  description: SortOrder
+  id: SortOrder
+  post: PostOrderByWithRelationInput
+  postId: SortOrder
+  topic: TopicOrderByWithRelationInput
+  topicId: SortOrder
+}
+
+enum PostTopicScalarFieldEnum {
+  description
+  id
+  postId
+  topicId
+}
+
 input PostTopicScalarWhereInput {
   AND: [PostTopicScalarWhereInput!]
   NOT: [PostTopicScalarWhereInput!]
@@ -3627,6 +4156,13 @@ input PostTopicScalarWhereInput {
   id: StringFilter
   postId: StringFilter
   topicId: StringFilter
+}
+
+input PostTopicUpdateInput {
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  post: PostUpdateOneRequiredWithoutCreatedPostTopicsNestedInput
+  topic: TopicUpdateOneRequiredWithoutCreatedPostTopicsNestedInput
 }
 
 input PostTopicUpdateManyMutationInput {
@@ -3726,6 +4262,28 @@ enum PostType {
   Announcement
   Campaign
   Post
+}
+
+input PostUpdateInput {
+  approvedBy: UserUpdateOneWithoutApprovedPostsNestedInput
+  content: StringFieldUpdateOperationsInput
+  createdPostIdeas: PostIdeaUpdateManyWithoutPostNestedInput
+  createdPostTags: PostTagUpdateManyWithoutPostNestedInput
+  createdPostTopics: PostTopicUpdateManyWithoutPostNestedInput
+  createdUserVotes: UserVoteUpdateManyWithoutPostNestedInput
+  editingBy: UserUpdateOneWithoutEditedPostsNestedInput
+  expiredAt: DateTimeFieldUpdateOperationsInput
+  head: StringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  likeCount: IntFieldUpdateOperationsInput
+  publishedAt: DateTimeFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  status: EnumPostStatusFieldUpdateOperationsInput
+  subTitle: NullableStringFieldUpdateOperationsInput
+  tag: StringFieldUpdateOperationsInput
+  title: StringFieldUpdateOperationsInput
+  type: EnumPostTypeFieldUpdateOperationsInput
+  viewCount: IntFieldUpdateOperationsInput
 }
 
 input PostUpdateManyMutationInput {
@@ -4121,8 +4679,30 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  award(where: AwardWhereUniqueInput!): Award!
+  awards(cursor: AwardWhereUniqueInput, distinct: [AwardScalarFieldEnum!], orderBy: [AwardOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: AwardWhereInput): AwardConnection!
   department(where: DepartmentWhereUniqueInput!): Department!
   departments(cursor: DepartmentWhereUniqueInput, distinct: [DepartmentScalarFieldEnum!], orderBy: [DepartmentOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: DepartmentWhereInput): DepartmentConnection!
+  feedback(where: FeedbackWhereUniqueInput!): Feedback!
+  feedbacks(cursor: FeedbackWhereUniqueInput, distinct: [FeedbackScalarFieldEnum!], orderBy: [FeedbackOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: FeedbackWhereInput): FeedbackConnection!
+  idea(where: IdeaWhereUniqueInput!): Idea!
+  ideas(cursor: IdeaWhereUniqueInput, distinct: [IdeaScalarFieldEnum!], orderBy: [IdeaOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: IdeaWhereInput): IdeaConnection!
+  industries(cursor: IndustryWhereUniqueInput, distinct: [IndustryScalarFieldEnum!], orderBy: [IndustryOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: IndustryWhereInput): IndustryConnection!
+  industry(where: IndustryWhereUniqueInput!): Industry!
+  post(where: PostWhereUniqueInput!): Post!
+  postTag(where: PostTagWhereUniqueInput!): PostTag!
+  postTags(cursor: PostTagWhereUniqueInput, distinct: [PostTagScalarFieldEnum!], orderBy: [PostTagOrderByWithRelationInput!] = [{}], skip: Int, take: Int, where: PostTagWhereInput): PostTagConnection!
+  postTopic(where: PostTopicWhereUniqueInput!): PostTopic!
+  postTopics(cursor: PostTopicWhereUniqueInput, distinct: [PostTopicScalarFieldEnum!], orderBy: [PostTopicOrderByWithRelationInput!] = [{}], skip: Int, take: Int, where: PostTopicWhereInput): PostTopicConnection!
+  posts(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: PostWhereInput): PostConnection!
+  tag(where: TagWhereUniqueInput!): Tag!
+  tags(cursor: TagWhereUniqueInput, distinct: [TagScalarFieldEnum!], orderBy: [TagOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: TagWhereInput): TagConnection!
+  topic(where: TopicWhereUniqueInput!): Topic!
+  topics(cursor: TopicWhereUniqueInput, distinct: [TopicScalarFieldEnum!], orderBy: [TopicOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: TopicWhereInput): TopicConnection!
+  userIndustry(where: UserIndustryWhereUniqueInput!): UserIndustry!
+  userIndustrys(cursor: UserIndustryWhereUniqueInput, distinct: [UserIndustryScalarFieldEnum!], orderBy: [UserIndustryOrderByWithRelationInput!] = [{}], skip: Int, take: Int, where: UserIndustryWhereInput): UserIndustryConnection!
+  userVote(where: UserVoteWhereUniqueInput!): UserVote!
+  userVotes(cursor: UserVoteWhereUniqueInput, distinct: [UserVoteScalarFieldEnum!], orderBy: [UserVoteOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: UserVoteWhereInput): UserVoteConnection!
   users(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!] = [{createdAt: desc}], skip: Int, take: Int, where: UserWhereInput): [User!]!
 }
 
@@ -4381,8 +4961,23 @@ type Tag {
   updatedById: String
 }
 
+type TagConnection {
+  nodes: [Tag!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type TagCount {
   createdPostTags: Int!
+}
+
+input TagCreateInput {
+  code: String
+  createdPostTags: PostTagCreateNestedManyWithoutTagInput
+  description: String
+  name: String!
+  sortOrder: Int
+  status: ActiveStatus
 }
 
 input TagCreateManyCreatedByInput {
@@ -4396,6 +4991,14 @@ input TagCreateManyCreatedByInput {
 input TagCreateManyCreatedByInputEnvelope {
   data: [TagCreateManyCreatedByInput!]!
   skipDuplicates: Boolean
+}
+
+input TagCreateManyInput {
+  code: String
+  description: String
+  name: String!
+  sortOrder: Int
+  status: ActiveStatus
 }
 
 input TagCreateManyUpdatedByInput {
@@ -4474,6 +5077,37 @@ input TagOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input TagOrderByWithRelationInput {
+  code: SortOrder
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  createdPostTags: PostTagOrderByRelationAggregateInput
+  deletedAt: SortOrder
+  description: SortOrder
+  id: SortOrder
+  name: SortOrder
+  sortOrder: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+}
+
+enum TagScalarFieldEnum {
+  code
+  createdAt
+  createdById
+  deletedAt
+  description
+  id
+  name
+  sortOrder
+  status
+  updatedAt
+  updatedById
+}
+
 input TagScalarWhereInput {
   AND: [TagScalarWhereInput!]
   NOT: [TagScalarWhereInput!]
@@ -4489,6 +5123,16 @@ input TagScalarWhereInput {
   status: EnumActiveStatusFilter
   updatedAt: DateTimeFilter
   updatedById: StringNullableFilter
+}
+
+input TagUpdateInput {
+  code: NullableStringFieldUpdateOperationsInput
+  createdPostTags: PostTagUpdateManyWithoutTagNestedInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  sortOrder: IntFieldUpdateOperationsInput
+  status: EnumActiveStatusFieldUpdateOperationsInput
 }
 
 input TagUpdateManyMutationInput {
@@ -4653,9 +5297,26 @@ type Topic {
   updatedById: String
 }
 
+type TopicConnection {
+  nodes: [Topic!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type TopicCount {
   childs: Int!
   createdPostTopics: Int!
+}
+
+input TopicCreateInput {
+  childs: TopicCreateNestedManyWithoutParentInput
+  createdPostTopics: PostTopicCreateNestedManyWithoutTopicInput
+  description: String
+  name: String!
+  parent: TopicCreateNestedOneWithoutChildsInput
+  slug: String!
+  sortOrder: Int
+  status: ActiveStatus
 }
 
 input TopicCreateManyCreatedByInput {
@@ -4670,6 +5331,15 @@ input TopicCreateManyCreatedByInput {
 input TopicCreateManyCreatedByInputEnvelope {
   data: [TopicCreateManyCreatedByInput!]!
   skipDuplicates: Boolean
+}
+
+input TopicCreateManyInput {
+  description: String
+  name: String!
+  parentId: String
+  slug: String!
+  sortOrder: Int
+  status: ActiveStatus
 }
 
 input TopicCreateManyParentInput {
@@ -4806,6 +5476,41 @@ input TopicOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input TopicOrderByWithRelationInput {
+  childs: TopicOrderByRelationAggregateInput
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  createdPostTopics: PostTopicOrderByRelationAggregateInput
+  deletedAt: SortOrder
+  description: SortOrder
+  id: SortOrder
+  name: SortOrder
+  parent: TopicOrderByWithRelationInput
+  parentId: SortOrder
+  slug: SortOrder
+  sortOrder: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+}
+
+enum TopicScalarFieldEnum {
+  createdAt
+  createdById
+  deletedAt
+  description
+  id
+  name
+  parentId
+  slug
+  sortOrder
+  status
+  updatedAt
+  updatedById
+}
+
 input TopicScalarWhereInput {
   AND: [TopicScalarWhereInput!]
   NOT: [TopicScalarWhereInput!]
@@ -4822,6 +5527,18 @@ input TopicScalarWhereInput {
   status: EnumActiveStatusFilter
   updatedAt: DateTimeFilter
   updatedById: StringNullableFilter
+}
+
+input TopicUpdateInput {
+  childs: TopicUpdateManyWithoutParentNestedInput
+  createdPostTopics: PostTopicUpdateManyWithoutTopicNestedInput
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  parent: TopicUpdateOneWithoutChildsNestedInput
+  slug: StringFieldUpdateOperationsInput
+  sortOrder: IntFieldUpdateOperationsInput
+  status: EnumActiveStatusFieldUpdateOperationsInput
 }
 
 input TopicUpdateManyMutationInput {
@@ -6345,6 +7062,18 @@ type UserIndustry {
   userId: String!
 }
 
+type UserIndustryConnection {
+  nodes: [UserIndustry!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input UserIndustryCreateInput {
+  description: String
+  industry: IndustryCreateNestedOneWithoutUserIndustriesInput!
+  user: UserCreateNestedOneWithoutCreatedUserIndustriesInput!
+}
+
 input UserIndustryCreateManyIndustryInput {
   description: String
   userId: String!
@@ -6353,6 +7082,12 @@ input UserIndustryCreateManyIndustryInput {
 input UserIndustryCreateManyIndustryInputEnvelope {
   data: [UserIndustryCreateManyIndustryInput!]!
   skipDuplicates: Boolean
+}
+
+input UserIndustryCreateManyInput {
+  description: String
+  industryId: String!
+  userId: String!
 }
 
 input UserIndustryCreateManyUserInput {
@@ -6403,6 +7138,22 @@ input UserIndustryOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input UserIndustryOrderByWithRelationInput {
+  description: SortOrder
+  id: SortOrder
+  industry: IndustryOrderByWithRelationInput
+  industryId: SortOrder
+  user: UserOrderByWithRelationInput
+  userId: SortOrder
+}
+
+enum UserIndustryScalarFieldEnum {
+  description
+  id
+  industryId
+  userId
+}
+
 input UserIndustryScalarWhereInput {
   AND: [UserIndustryScalarWhereInput!]
   NOT: [UserIndustryScalarWhereInput!]
@@ -6411,6 +7162,13 @@ input UserIndustryScalarWhereInput {
   id: StringFilter
   industryId: StringFilter
   userId: StringFilter
+}
+
+input UserIndustryUpdateInput {
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  industry: IndustryUpdateOneRequiredWithoutUserIndustriesNestedInput
+  user: UserUpdateOneRequiredWithoutCreatedUserIndustriesNestedInput
 }
 
 input UserIndustryUpdateManyMutationInput {
@@ -7561,6 +8319,19 @@ type UserVote {
   userId: String!
 }
 
+type UserVoteConnection {
+  nodes: [UserVote!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input UserVoteCreateInput {
+  description: String
+  idea: IdeaCreateNestedOneWithoutCreatedUserVotesInput!
+  post: PostCreateNestedOneWithoutCreatedUserVotesInput!
+  user: UserCreateNestedOneWithoutCreatedUserVotesInput!
+}
+
 input UserVoteCreateManyCreatedByInput {
   description: String
   ideaId: String!
@@ -7582,6 +8353,13 @@ input UserVoteCreateManyIdeaInput {
 input UserVoteCreateManyIdeaInputEnvelope {
   data: [UserVoteCreateManyIdeaInput!]!
   skipDuplicates: Boolean
+}
+
+input UserVoteCreateManyInput {
+  description: String
+  ideaId: String!
+  postId: String!
+  userId: String!
 }
 
 input UserVoteCreateManyPostInput {
@@ -7705,6 +8483,37 @@ input UserVoteOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input UserVoteOrderByWithRelationInput {
+  createdAt: SortOrder
+  createdBy: UserOrderByWithRelationInput
+  createdById: SortOrder
+  deletedAt: SortOrder
+  description: SortOrder
+  id: SortOrder
+  idea: IdeaOrderByWithRelationInput
+  ideaId: SortOrder
+  post: PostOrderByWithRelationInput
+  postId: SortOrder
+  updatedAt: SortOrder
+  updatedBy: UserOrderByWithRelationInput
+  updatedById: SortOrder
+  user: UserOrderByWithRelationInput
+  userId: SortOrder
+}
+
+enum UserVoteScalarFieldEnum {
+  createdAt
+  createdById
+  deletedAt
+  description
+  id
+  ideaId
+  postId
+  updatedAt
+  updatedById
+  userId
+}
+
 input UserVoteScalarWhereInput {
   AND: [UserVoteScalarWhereInput!]
   NOT: [UserVoteScalarWhereInput!]
@@ -7719,6 +8528,14 @@ input UserVoteScalarWhereInput {
   updatedAt: DateTimeFilter
   updatedById: StringNullableFilter
   userId: StringFilter
+}
+
+input UserVoteUpdateInput {
+  description: NullableStringFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  idea: IdeaUpdateOneRequiredWithoutCreatedUserVotesNestedInput
+  post: PostUpdateOneRequiredWithoutCreatedUserVotesNestedInput
+  user: UserUpdateOneRequiredWithoutCreatedUserVotesNestedInput
 }
 
 input UserVoteUpdateManyMutationInput {
