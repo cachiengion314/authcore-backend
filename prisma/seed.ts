@@ -22,6 +22,7 @@ async function main() {
   const { admin } = await seedTenantAdmin()
 
   await seedDepartment(admin)
+  await seedPosts(admin)
 }
 
 main()
@@ -151,6 +152,58 @@ async function seedDepartment(admin) {
   })
 }
 
+async function seedPosts(admin) {
+  let data = [
+    {
+      slug: 'p001',
+      type: 'Post',
+      title: 'happy birthday to Ms. Tieu Yen Trinh',
+      subTitle: 'happy birthday to Trinh',
+      head: 'its just birthday after all',
+      content: 'Some thing really long text in here please take care of it!',
+      tag: 'fun happy birthday',
+      status: 'Published',
+      publishedAt: new Date(),
+      expiredAt: new Date(),
+      createdById: admin.id,
+      updatedById: admin.id,
+    },
+    {
+      slug: 'p002',
+      type: 'Post',
+      title: 'happy birthday to Ms. Nguyen Hoai Son',
+      subTitle: 'happy birthday to Son',
+      head: 'its just birthday after all',
+      content: 'Some thing really long text in here please take care of it!',
+      tag: 'fun happy birthday',
+      status: 'Published',
+      publishedAt: new Date(),
+      expiredAt: new Date(),
+      createdById: admin.id,
+      updatedById: admin.id,
+    },
+    {
+      slug: 'p003',
+      type: 'Post',
+      title: 'happy birthday to Mr. Dong Thanh Lam',
+      subTitle: 'happy birthday to Lam',
+      head: 'its just birthday after all',
+      content: 'Some thing really long text in here please take care of it!',
+      tag: 'fun happy birthday',
+      status: 'Published',
+      publishedAt: new Date(),
+      expiredAt: new Date(),
+      createdById: admin.id,
+      updatedById: admin.id,
+    },
+  ]
+
+  await prisma.post.createMany({
+    data: data,
+  })
+}
+
+// private function
 async function clearDatabase(models) {
   for (let i = 0; i < models.length; ++i) {
     const dbName = models[i].name[0].toLowerCase() + models[i].name.slice(1)

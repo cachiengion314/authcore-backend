@@ -139,9 +139,9 @@ Table posts {
   head String [not null]
   content String [not null]
   tag String [not null]
-  viewCount Int [not null]
-  likeCount Int [not null]
-  status PostStatus [not null]
+  viewCount Int [not null, default: 0]
+  likeCount Int [not null, default: 0]
+  status PostStatus [not null, default: 'Published']
   editingBy users
   editingById String
   approvedBy users

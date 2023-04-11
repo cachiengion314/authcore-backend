@@ -238,6 +238,7 @@ enum PostStatus {
   WaitingForApproval
 }
 
+// Bảng tin
 model Post {
   id String @id @default(cuid())
 
@@ -248,9 +249,9 @@ model Post {
   head         String // Head	String			Mô tả ngắn
   content      String // Content	String			Nội dung
   tag          String // Tag	String			Các từ khóa, cách nhau bởi dấu phẩy
-  viewCount    Int // ViewCount	Number			Lượt xem
-  likeCount    Int // LikeCount	Number			Lượt thích
-  status       PostStatus // Status	Enum	"Editing WaitingForApproval Published Suspended"
+  viewCount    Int        @default(0) // ViewCount	Number			Lượt xem
+  likeCount    Int        @default(0) // LikeCount	Number			Lượt thích
+  status       PostStatus @default(Published) // Status	Enum	"Editing WaitingForApproval Published Suspended"
   editingBy    User?      @relation("editingByHistory", fields: [editingById], references: [id], onDelete: Cascade, onUpdate: Cascade)
   editingById  String? // EditingBy	Guid		x	FK, User
   approvedBy   User?      @relation("approvedByHistory", fields: [approvedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -415,6 +416,7 @@ model UserVote {
   @@map("user_votes")
 }
 
+// Phòng ban
 model Department {
   id String @id @default(cuid())
 
@@ -441,6 +443,7 @@ model Department {
   @@map("departments")
 }
 
+// Lĩnh vực
 model Industry {
   id String @id @default(cuid())
 
@@ -511,6 +514,7 @@ model Tag {
   @@map("tags")
 }
 
+// Thành tựu
 model Award {
   id String @id @default(cuid())
 

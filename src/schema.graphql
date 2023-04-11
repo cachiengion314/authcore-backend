@@ -2997,15 +2997,15 @@ input PostCreateInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateManyApprovedByInput {
@@ -3013,15 +3013,15 @@ input PostCreateManyApprovedByInput {
   editingById: String
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateManyApprovedByInputEnvelope {
@@ -3035,15 +3035,15 @@ input PostCreateManyCreatedByInput {
   editingById: String
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateManyCreatedByInputEnvelope {
@@ -3056,15 +3056,15 @@ input PostCreateManyEditingByInput {
   content: String!
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateManyEditingByInputEnvelope {
@@ -3078,15 +3078,15 @@ input PostCreateManyInput {
   editingById: String
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateManyUpdatedByInput {
@@ -3095,15 +3095,15 @@ input PostCreateManyUpdatedByInput {
   editingById: String
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateManyUpdatedByInputEnvelope {
@@ -3192,15 +3192,15 @@ input PostCreateWithoutApprovedByInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateWithoutCreatedByInput {
@@ -3213,15 +3213,15 @@ input PostCreateWithoutCreatedByInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateWithoutCreatedPostIdeasInput {
@@ -3233,15 +3233,15 @@ input PostCreateWithoutCreatedPostIdeasInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateWithoutCreatedPostTagsInput {
@@ -3253,15 +3253,15 @@ input PostCreateWithoutCreatedPostTagsInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateWithoutCreatedPostTopicsInput {
@@ -3273,15 +3273,15 @@ input PostCreateWithoutCreatedPostTopicsInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateWithoutCreatedUserVotesInput {
@@ -3293,15 +3293,15 @@ input PostCreateWithoutCreatedUserVotesInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateWithoutEditingByInput {
@@ -3313,15 +3313,15 @@ input PostCreateWithoutEditingByInput {
   createdUserVotes: UserVoteCreateNestedManyWithoutPostInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 input PostCreateWithoutUpdatedByInput {
@@ -3334,15 +3334,15 @@ input PostCreateWithoutUpdatedByInput {
   editingBy: UserCreateNestedOneWithoutEditedPostsInput
   expiredAt: DateTime!
   head: String!
-  likeCount: Int!
+  likeCount: Int
   publishedAt: DateTime!
   slug: String!
-  status: PostStatus!
+  status: PostStatus
   subTitle: String
   tag: String!
   title: String!
   type: PostType
-  viewCount: Int!
+  viewCount: Int
 }
 
 type PostIdea {
